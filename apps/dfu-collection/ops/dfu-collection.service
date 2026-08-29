@@ -1,0 +1,19 @@
+[Unit]
+Description=Ritan AI isolated doctor data collection service
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/dfu-collection
+EnvironmentFile=/home/ubuntu/dfu-collection/.env
+ExecStart=/home/ubuntu/dfu-collection/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8005
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+

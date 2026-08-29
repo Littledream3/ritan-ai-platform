@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="日坛 AI 肌肤图像评估入口，提供肌肤状态分析与个体化护理建议。" />
+    <title>日坛 AI 肌肤状态评估</title>
+    <link rel="stylesheet" href="./styles.css?v=20260729-platform2" />
+    <link rel="preconnect" href="https://api.qrserver.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.qrserver.com" />
+  </head>
+  <body class="desktop-page platform-page">
+    <header class="platform-header">
+      <a class="platform-brand" href="/" aria-label="返回日坛 AI 首页">
+        <strong>日坛 AI</strong>
+        <span>RITAN AI</span>
+      </a>
+      <nav class="platform-nav" aria-label="主导航">
+        <a href="#mechanism">评估原理</a>
+        <a href="#report-preview">报告示例</a>
+        <a href="#business">商务合作</a>
+        <a class="platform-nav-cta" href="#start">开始评估</a>
+      </nav>
+      <span class="platform-position">AI 经皮精准递送平台</span>
+    </header>
+
+    <main>
+      <section class="platform-hero" id="start">
+        <div class="platform-hero-copy">
+          <p class="platform-kicker">SKIN IMAGE ASSESSMENT</p>
+          <h1>AI 肌肤状态<br />评估引擎</h1>
+          <p class="platform-hero-subtitle">从一张清晰照片，到一份个体化护理建议</p>
+          <p class="platform-hero-body">
+            日坛 AI 通过自研图像评估模型识别肌肤状态与重点问题区域，
+            生成结构化评估结果，并连接后续产品、服务与定制咨询。
+          </p>
+          <div class="platform-hero-actions">
+            <a class="platform-button primary" href="#scan">扫码开始评估</a>
+            <a class="platform-button secondary" href="#mechanism">了解工作原理</a>
+          </div>
+        </div>
+
+        <div class="platform-hero-visual">
+          <img src="/lanjiao-static/picture/b9af8d33-77f7-46d7-a887-b90cc354f8a4.png" alt="AI 肌肤状态评估拍摄示意" />
+          <div class="platform-qr-card">
+            <div class="qr-shell">
+              <div class="qr-skeleton" id="qrSkeleton1"></div>
+              <img id="qrCode" alt="扫码进入手机版肌肤状态评估" width="206" height="206" />
+            </div>
+            <div>
+              <strong>手机扫码开始</strong>
+              <span>全程约 90 秒｜报告含个体化透皮方案建议</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="platform-trust" aria-label="平台能力说明">
+        <details data-trust-topic="qualification">
+          <summary><strong>药证</strong><span><b>药证持有企业背景</b><small>点击查看说明</small></span></summary>
+          <p>平台依托药品研发与经皮递送相关企业背景建设。具体资质、许可范围与适用主体，以企业正式披露的证照及监管部门公示信息为准。</p>
+        </details>
+        <details data-trust-topic="multiomics">
+          <summary><strong>自研</strong><span><b>多组学模型体系</b><small>点击查看说明</small></span></summary>
+          <p>平台以自研图像评估能力为入口，逐步建设图像特征、功效成分、配方标签和反馈数据之间的关联体系，用于支持个体化方案匹配。</p>
+        </details>
+        <details data-trust-topic="privacy">
+          <summary><strong>3级</strong><span><b>数据分级授权</b><small>点击查看说明</small></span></summary>
+          <p>仅本次分析为默认选项；匿名模型改进、个性化方案与后续服务均需用户主动勾选，授权范围和联系方式分别记录并可申请查询或删除。</p>
+        </details>
+      </section>
+
+      <section class="platform-section mechanism-section" id="mechanism">
+        <div class="platform-section-heading">
+          <p>工作机理</p>
+          <h2>从图像评估到经皮递送方案</h2>
+          <span>把可见肌肤特征转化为成分、剂型和使用路径建议，让检测结果连接真实行动。</span>
+        </div>
+        <div class="mechanism-track">
+          <article>
+            <span>01 / 图像 AI</span>
+            <h3>测得准</h3>
+            <p>通过规范正脸图像评估纹理、色斑、毛孔、泛红、弹性和重点问题区域，为后续方案匹配建立结构化肌肤状态画像。</p>
+          </article>
+          <article>
+            <span>02 / 数据匹配</span>
+            <h3>配得对</h3>
+            <p>结合多组学数据库与功效标签，匹配神经酰胺、烟酰胺、维 A 类等成分方向，并给出建议浓度区间和使用周期。</p>
+          </article>
+          <article>
+            <span>03 / 经皮递送</span>
+            <h3>送得到</h3>
+            <p>依据肌肤状态和目标层次匹配贴剂、微乳、脂质体等递送路线，连接日坛 AI 的透皮技术与后续专业服务。</p>
+          </article>
+        </div>
+        <p class="mechanism-difference">全球多数 AI 测肤止于第一步。我们的差异在第三步。</p>
+      </section>
+
+      <section class="platform-section report-preview-section" id="report-preview">
+        <div class="report-preview-copy">
+          <p class="platform-kicker">STRUCTURED REPORT</p>
+          <h2>报告不只给一个分数</h2>
+          <p>
+            报告将当前图像能够支持的结果组织为总评、重点指标、状态分析与护理建议，
+            并提供清晰的后续行动入口。
+          </p>
+          <ul>
+            <li>肌肤状态总评与皮肤年龄参考</li>
+            <li>皱纹、色斑、弹性与毛孔分项结果</li>
+            <li>成分、浓度、剂型与使用周期建议</li>
+            <li>产品、预约与定制咨询入口</li>
+          </ul>
+        </div>
+        <div class="report-preview" aria-label="肌肤状态报告结构示例">
+          <div class="report-preview-header">
+            <span>肌肤状态评估</span>
+            <strong>REPORT</strong>
+          </div>
+          <div class="report-preview-overview">
+            <div class="report-preview-score">
+              <strong>82</strong>
+              <div><span>综合状态参考</span><small>示例数据，不代表真实检测结果</small></div>
+            </div>
+            <div class="radar-chart" role="img" aria-label="纹理、色斑、弹性、毛孔与泛红五项示例雷达图">
+              <i></i><i></i><i></i>
+              <span></span>
+              <b class="radar-label label-one">纹理</b>
+              <b class="radar-label label-two">色斑</b>
+              <b class="radar-label label-three">弹性</b>
+              <b class="radar-label label-four">毛孔</b>
+              <b class="radar-label label-five">泛红</b>
+            </div>
+          </div>
+          <div class="report-preview-metrics">
+            <span>纹理状态</span><strong>稳定</strong>
+            <span>色斑表现</span><strong>需关注</strong>
+            <span>弹性参考</span><strong>良好</strong>
+            <span>毛孔状况</span><strong>轻度</strong>
+          </div>
+          <div class="report-preview-note">
+            实际报告依据本次上传图像生成，结果仅作肌肤状态与护理方向参考。
+          </div>
+          <div class="solution-preview">
+            <div class="solution-preview-heading"><strong>个体化透皮方案示例</strong><span>需经专业人员确认</span></div>
+            <div class="solution-table" role="table" aria-label="个体化透皮方案示例">
+              <div role="row"><b>成分方向</b><b>浓度区间</b><b>剂型路线</b><b>周期</b></div>
+              <div role="row"><span>神经酰胺</span><span>1% 至 3%</span><span>脂质体</span><span>8 周</span></div>
+              <div role="row"><span>烟酰胺</span><span>2% 至 5%</span><span>微乳</span><span>8 至 12 周</span></div>
+              <div role="row"><span>维 A 类</span><span>专业评估</span><span>缓释路线</span><span>12 周</span></div>
+            </div>
+          </div>
+          <div class="preview-actions" aria-label="报告后续行动">
+            <button type="button" data-lead-type="product">匹配的产品</button>
+            <button type="button" data-lead-type="appointment">预约医美透皮服务</button>
+            <button type="button" data-lead-type="custom_consult">定制化妆品咨询</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="platform-section business-section" id="business">
+        <div class="platform-section-heading">
+          <p>品牌与渠道合作</p>
+          <h2>为品牌方与渠道提供 AI 测肤 + 配方匹配能力</h2>
+          <span>统一提交合作意向后进入跟进流程，预计 48 小时内完成首次响应。</span>
+        </div>
+        <div class="business-layout">
+          <button type="button" class="business-option" data-lead-type="business_api">
+            <span>API 接入</span>
+            <h3>测肤引擎嵌入现有终端</h3>
+            <p>面向品牌小程序、门店工具和会员服务接入，可按实际调用规模讨论合作方式。</p>
+            <strong>提交合作意向</strong>
+          </button>
+          <button type="button" class="business-option" data-lead-type="business_custom">
+            <span>联合定制</span>
+            <h3>测肤数据驱动产品共创</h3>
+            <p>围绕目标人群、功效方向、报告结构和产品承接开展 OEM/ODM 联合定制。</p>
+            <strong>提交合作意向</strong>
+          </button>
+          <button type="button" class="business-option" data-lead-type="business_technology">
+            <span>透皮技术授权</span>
+            <h3>升级产品的透皮剂型路线</h3>
+            <p>围绕贴剂、微乳、脂质体等技术方向，讨论产品升级与授权合作边界。</p>
+            <strong>提交合作意向</strong>
+          </button>
+        </div>
+        <div class="partner-placeholders" aria-label="合作品牌展示位">
+          <span>合作品牌展示位 01</span>
+          <span>合作品牌展示位 02</span>
+          <span>合作品牌展示位 03</span>
+          <small>待获得正式展示授权后替换为合作品牌标识</small>
+        </div>
+      </section>
+
+      <section class="platform-section evidence-section">
+        <div class="evidence-grid">
+          <article><strong>建设中</strong><span>模型图像训练量级<br />计划 2026 Q4 披露</span></article>
+          <article><strong>建设中</strong><span>多组学数据维度<br />计划 2026 Q4 披露</span></article>
+          <article><strong>18项</strong><span>当前图像评估维度</span></article>
+          <article><strong>20至60秒</strong><span>常见报告生成耗时</span></article>
+        </div>
+        <div class="methodology-note">
+          <strong>方法说明</strong>
+          <p>当前版本首先从规范正脸图像中提取纹理、色斑、毛孔、泛红与弹性等可见特征，形成结构化肌肤状态画像。平台正在建设功效成分、配方剂型与后续反馈标签体系，用于将图像指标映射到成分方向、浓度区间和递送路线。正式输出仍需结合使用人群、产品合规范围与专业人员复核。</p>
+        </div>
+        <div class="privacy-panel">
+          <div>
+            <p class="platform-kicker">DATA &amp; PRIVACY</p>
+            <h2>数据使用由您选择</h2>
+          </div>
+          <div>
+            <p>仅用于本次分析为默认选项，分析完成后不保留原始照片。</p>
+            <p>匿名模型改进和后续服务联系均需单独主动选择，可不勾选。</p>
+            <p>如需查询、更正或删除已授权数据，可通过下方数据权益入口提交申请。</p>
+            <button type="button" class="privacy-request" data-lead-type="privacy_request">提交数据权益申请</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="platform-section final-steps" id="scan">
+        <div class="final-steps-copy">
+          <p class="platform-kicker">START ASSESSMENT</p>
+          <h2>四步完成肌肤状态评估</h2>
+          <ol>
+            <li><span>01</span><p>扫码进入手机端，选择数据使用范围。</p></li>
+            <li><span>02</span><p>允许相机权限，按照画面提示调整光线与位置。</p></li>
+            <li><span>03</span><p>系统自动完成拍摄并生成结构化结果。</p></li>
+            <li><span>04</span><p>获取报告 → 查看个体化透皮方案 → 一键匹配产品或预约服务。</p></li>
+          </ol>
+        </div>
+        <div class="final-qr">
+          <div class="qr-shell large">
+            <div class="qr-skeleton" id="qrSkeleton2"></div>
+            <img id="qrCodeBottom" alt="扫码进入手机版肌肤状态评估" width="276" height="276" />
+          </div>
+          <strong>手机扫码开始评估</strong>
+          <p id="mobileUrl"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="platform-footer">
+      <div>
+        <strong>日坛 AI</strong>
+        <p>一个 AI 底座，连接透皮给药、医美透皮与功效化妆品业务。</p>
+      </div>
+      <nav aria-label="页脚导航">
+        <a href="/">了解平台</a>
+        <a href="#business" data-track-event="skin_business_clicked">商务合作</a>
+        <a href="/" aria-label="前往日坛 AI 官网了解企业信息">投资者关系</a>
+      </nav>
+    </footer>
+
+    <div class="lead-modal" id="leadModal" hidden>
+      <div class="lead-dialog" role="dialog" aria-modal="true" aria-labelledby="leadTitle">
+        <button class="lead-close" id="leadClose" type="button" aria-label="关闭">关闭</button>
+        <p class="platform-kicker">CONTACT</p>
+        <h2 id="leadTitle">提交合作意向</h2>
+        <p id="leadIntro">请留下真实联系方式和需求，我们将在工作时间内处理。</p>
+        <form id="leadForm">
+          <input type="hidden" name="lead_type" value="business_general" />
+          <label><span>联系人</span><input name="name" maxlength="40" autocomplete="name" /></label>
+          <label><span>联系方式 *</span><input name="contact" maxlength="100" required placeholder="手机、微信或邮箱" /></label>
+          <label><span>公司名称</span><input name="company" maxlength="100" autocomplete="organization" /></label>
+          <label><span>业务品类</span><input name="category" maxlength="80" /></label>
+          <label><span>年业务体量</span><input name="annual_volume" maxlength="80" /></label>
+          <label class="lead-wide"><span>需求描述</span><textarea name="description" maxlength="1000" rows="4"></textarea></label>
+          <p class="lead-status" id="leadStatus" aria-live="polite"></p>
+          <button class="platform-button primary lead-submit" type="submit">确认提交</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="./platform.js?v=20260729-platform2"></script>
+  </body>
+</html>

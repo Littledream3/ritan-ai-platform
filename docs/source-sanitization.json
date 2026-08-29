@@ -1,0 +1,20 @@
+{
+  "root": "E:\\dfu-migration-20260730\\github-staging-v3",
+  "changes": [
+    {
+      "path": "E:\\dfu-migration-20260730\\github-staging-v3\\apps\\skin-diagnosis\\agent_server\\server.py",
+      "rule": "replace_hardcoded_llm_token_with_environment_variable",
+      "replacements": 0
+    },
+    {
+      "path": "E:\\dfu-migration-20260730\\github-staging-v3\\apps\\ritan-legacy\\server\\api\\auth.py",
+      "rule": "mask_phone_examples",
+      "replacements": 0
+    },
+    {
+      "path": "E:\\dfu-migration-20260730\\github-staging-v3",
+      "rule": "mask_remaining_literal_mobile_numbers",
+      "replacements": 3
+    }
+  ]
+}

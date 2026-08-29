@@ -1,0 +1,90 @@
+services:
+  # ---- MySQL 8.0 ----
+  mysql:
+    image: mysql:8.0
+    container_name: port-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-ChangeMe!Root2024}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-port}
+      MYSQL_USER: ${MYSQL_USER:-port}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-ChangeMe!Port2024}
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - port-net
+
+  # ---- Redis 7 ----
+  redis:
+    image: redis:7-alpine
+    container_name: port-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - port-net
+
+  # ---- FastAPI 应用 ----
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: port-app
+    restart: always
+    env_file:
+      - .env
+    environment:
+      # 容器内用 Docker 服务名连接 MySQL/Redis
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./data/videos:/app/static/videos
+    networks:
+      - port-net
+    # 不对外暴露端口，仅通过 nginx 访问
+
+  # ---- Nginx 反向代理 ----
+  nginx:
+    build:
+      context: docker/nginx
+      dockerfile: Dockerfile
+    container_name: port-nginx
+    restart: always
+    ports:
+      - "8080:80"
+      # 后续获取域名+SSL 后改为 443:443
+    # volumes:
+    #   - ./docker/nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - app
+    networks:
+      - port-net
+
+networks:
+  port-net:
+    driver: bridge

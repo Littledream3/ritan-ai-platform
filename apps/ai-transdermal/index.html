@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="日坛 AI 经皮药物仿真结果平台，展示芬太尼上市贴剂仿真与公开人体平均 PK 的校准型比较。">
+  <meta name="theme-color" content="#11171b">
+  <title>经皮药物仿真结果平台 | 日坛 AI</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20260814-4">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至主要内容</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="返回日坛 AI 官网">
+      <span class="brand-mark" aria-hidden="true">R</span>
+      <span><strong>日坛 AI</strong><small>RITAN AI</small></span>
+    </a>
+    <nav class="primary-nav" aria-label="页面导航">
+      <a href="#fentanyl">芬太尼结果</a>
+      <a class="nav-home" href="/">返回官网</a>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero section-shell" aria-labelledby="heroTitle">
+      <div class="hero-copy">
+        <p class="eyebrow">AI PRECISION TRANSDERMAL</p>
+        <h1 id="heroTitle">经皮药物仿真结果平台</h1>
+        <p class="hero-lead">比较候选制剂、上市贴剂仿真与公开人体 PK，形成可追溯的研发证据。</p>
+        <form class="search-form" id="moleculeForm" role="search" novalidate>
+          <label for="moleculeInput">搜索药物、英文名或产品名</label>
+          <div class="search-row">
+            <input id="moleculeInput" name="molecule" autocomplete="off" placeholder="例如：芬太尼、Fentanyl" aria-describedby="searchHint searchMessage">
+            <button class="button button-primary" type="submit">查看结果</button>
+          </div>
+          <p class="field-hint" id="searchHint">当前展示芬太尼，更多研究对象将持续接入。</p>
+          <p class="form-message" id="searchMessage" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="result-section" id="fentanyl" aria-labelledby="resultTitle">
+      <div class="section-shell result-shell">
+        <div class="result-overview">
+          <header class="molecule-heading">
+            <div class="classification">上市贴剂基准案例</div>
+            <h2 id="resultTitle">芬太尼</h2>
+            <p>Fentanyl</p>
+          </header>
+          <dl class="result-meta">
+            <div><dt>产品或方案</dt><dd>25 µg/h 芬太尼经皮贴剂</dd></div>
+            <div><dt>规格</dt><dd>标称释放 25 µg/h</dd></div>
+            <div><dt>贴敷时长</dt><dd>72 h</dd></div>
+            <div><dt>模型状态</dt><dd>校准完成，峰值时间仍有偏差</dd></div>
+          </dl>
+        </div>
+        <div class="result-callout">
+          <strong>主要结果</strong>
+          <p>预测峰值接近公开人体目标，预测峰值时间仍晚约 6 小时。</p>
+        </div>
+        <div class="chart-block" id="chartBlock">
+          <div class="chart-heading">
+            <div>
+              <h3>血浆浓度随时间变化</h3>
+              <p>曲线按 0-144 小时的时间顺序生成，72 小时为揭贴时点。</p>
+            </div>
+            <div class="chart-legend" aria-label="图例">
+              <span><i class="legend-line model"></i>模型预测</span>
+              <span><i class="legend-line human"></i>公开人体平均 PK</span>
+              <span><i class="legend-line removal"></i>揭贴时点</span>
+            </div>
+          </div>
+          <div class="chart-frame">
+            <div class="chart-loading" id="chartLoading" role="status">正在载入芬太尼结果数据</div>
+            <div class="chart-error" id="chartError" hidden>
+              <strong>曲线数据载入失败</strong>
+              <button class="button button-secondary" id="retryChart" type="button">重新载入</button>
+            </div>
+            <svg id="fentanylChart" viewBox="0 0 1120 430" role="img" aria-labelledby="chartTitle chartDescription" hidden>
+              <title id="chartTitle">芬太尼贴剂模型预测与公开人体平均 PK 曲线</title>
+              <desc id="chartDescription">横轴为贴剂应用后时间，单位小时。纵轴为血浆浓度，单位纳克每毫升。珊瑚红曲线表示模型预测，白色曲线及数据点表示公开人体平均 PK 近似数字化数据。</desc>
+              <g id="chartGrid"></g>
+              <line id="removalLine" class="removal-line"></line>
+              <path id="humanPath" class="data-path human-path"></path>
+              <g id="humanPoints"></g>
+              <path id="modelPath" class="data-path model-path"></path>
+              <line id="timeCursor" class="time-cursor"></line>
+              <circle id="humanCursor" class="cursor-point human-cursor" r="5"></circle>
+              <circle id="modelCursor" class="cursor-point model-cursor" r="5"></circle>
+            </svg>
+            <output class="time-readout" id="timeReadout" aria-live="off">0 h</output>
+          </div>
+          <div class="chart-notes">
+            <p><strong>模型指标：</strong>Cmax 0.8346 ng/mL，Tmax 37.67 h。</p>
+            <p><strong>公开目标：</strong>Cmax 0.85 ng/mL，Tmax 31.7 h。</p>
+            <p class="model-disclaimer">公开曲线为监管资料中的平均 PK 近似数字化数据，不是患者原始采血数据。结果用于模型校准与研发判断，不用于临床决策。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="app.js?v=20260814-4"></script>
+</body>
+</html>

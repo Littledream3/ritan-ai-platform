@@ -1,0 +1,16 @@
+{
+  "archive": "E:\\dfu-migration-20260730\\raw\\source\\server-applications.tar.gz",
+  "destination": "E:\\dfu-migration-20260730\\github-staging-v3\\apps",
+  "extracted_files": 1263,
+  "skipped": [
+    {
+      "path": "dfu-v2/best_model.pth",
+      "reason": "Skipped archive member type b'2'"
+    },
+    {
+      "path": "dfu-v2/best_model_weights.pth",
+      "reason": "Skipped archive member type b'2'"
+    }
+  ],
+  "renamed": []
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=Ritan AI anonymous media drop service
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/media-drop
+EnvironmentFile=/home/ubuntu/media-drop/.env
+ExecStart=/home/ubuntu/media-drop/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8006
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+

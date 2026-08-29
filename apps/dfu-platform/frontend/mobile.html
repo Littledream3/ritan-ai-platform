@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+    <title>DFU 糖尿病足溃疡智能检测</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css?v=20260717-auth1" />
+    <link rel="stylesheet" href="./report-redesign.css?v=20260729-dfu-ch4" />
+  </head>
+  <body class="mobile-page">
+
+    <!-- ═══ 首页 Landing ═══ -->
+    <section id="landing" class="mobile-shell">
+
+      <header class="mobile-nav">
+        <button class="nav-icon" type="button" aria-label="菜单">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <button class="nav-icon" type="button" aria-label="搜索">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+        </button>
+        <div class="mobile-logo">DFU</div>
+        <button class="nav-account" id="navUserBtn" type="button" aria-label="登录或注册" onclick="openUserPanel()"><span id="navAccountLabel">登录 / 注册</span></button>
+        <button class="nav-icon" id="navHistoryBtn" type="button" aria-label="历史" onclick="loadHistory()" style="display:none;">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </button>
+      </header>
+
+      <div class="mobile-hero-img" style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);height:220px;display:grid;place-items:center;">
+        <div style="color:#c6a66f;font-family:Georgia,serif;font-size:52px;letter-spacing:2px;font-weight:700;">DFU</div>
+        <div style="color:rgba(255,255,255,0.55);font-size:13px;letter-spacing:3px;margin-top:4px;">AI INTELLIGENT DETECTION</div>
+      </div>
+
+      <section class="mobile-hero">
+        <h1>糖尿病足溃疡智能分级评估</h1>
+        <h2>上传清晰创面图像，快速获取 Wagner 分级参考</h2>
+        <p>基于自研智能评估模型，对创面特征进行综合分析，支持 Wagner 0–5 级分级评估，并提供个体化就医建议与健康管理指导。</p>
+        <button class="outline-cta" type="button" id="btnStart">开始 DFU 智能检测</button>
+      </section>
+
+      <section class="mobile-story">
+        <p>糖尿病足溃疡（DFU）是糖尿病最严重的并发症之一，全球每年超过 100 万人因此截肢。早期识别、正确分级，是保肢的关键。</p>
+        <p>DFU 智能检测系统采用自研智能评估技术，辅助患者和基层医生了解创面风险，为规范评估与及时就医提供参考。</p>
+        <div style="width:100%;height:200px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:grid;place-items:center;margin-top:32px;border-radius:12px;">
+          <div style="text-align:center;">
+            <div style="color:#c6a66f;font-size:14px;letter-spacing:4px;margin-bottom:8px;">WAGNER 0–5 CLASSIFICATION</div>
+            <div style="color:rgba(255,255,255,0.6);font-size:13px;">Grade 0 · 无开放性溃疡 ｜ Grade 1 · 表浅溃疡</div>
+            <div style="color:rgba(255,255,255,0.6);font-size:13px;">Grade 2 · 深部溃疡 ｜ Grade 3 · 深部感染</div>
+            <div style="color:rgba(255,255,255,0.6);font-size:13px;">Grade 4 · 局部坏疽 ｜ Grade 5 · 广泛坏疽</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mobile-steps">
+        <h2>三步完成检测</h2>
+        <div class="timeline">
+          <div class="step"><span>1</span><p>依次采集足部左侧、右侧、足底全景及两张创口特写</p></div>
+          <div class="step"><span>2</span><p>自研模型综合分析创面特征，快速输出 Wagner 分级参考</p></div>
+          <div class="step"><span>3</span><p>获取个体化就医建议与健康管理指导</p></div>
+        </div>
+      </section>
+
+      <div class="bottom-cta">
+        <button class="outline-cta" type="button" id="btnStartBottom">开始 DFU 智能检测</button>
+      </div>
+    </section>
+
+    <!-- ═══ 拍摄流程 Capture App ═══ -->
+    <section id="captureApp" class="capture-app">
+      <header class="capture-header">
+        <button id="backLanding" class="nav-icon" type="button" aria-label="返回">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <h1>足部影像采集</h1>
+        <button id="closeCapture" class="capture-close" type="button" aria-label="关闭">&times;</button>
+      </header>
+
+      <main class="capture-main">
+
+        <!-- 拍摄提示页 -->
+        <section id="captureNotice" class="capture-notice">
+          <div class="notice-card">
+            <span class="capture-plan-kicker">STANDARDIZED CAPTURE</span>
+            <h2>请依次拍摄 5 张照片</h2>
+            <p>先完成足部全景，再补充两张创口特写。标准化视角有助于完整记录创面位置与严重程度。</p>
+            <div class="notice-items">
+              <div><span>1–3</span><strong>足部左侧、右侧与足底全景</strong></div>
+              <div><span>4–5</span><strong>最严重的两处创口特写</strong></div>
+              <div><span>☀</span><strong>光线均匀、背景简洁，避免阴影和反光</strong></div>
+              <div><span>◎</span><strong>保持画面稳定，确认清晰后再继续</strong></div>
+            </div>
+            <div class="dfu-consent-panel">
+              <label class="required-consent"><input id="analysisConsent" type="checkbox"> <span><b>必要同意：</b>我已阅读并理解本系统仅提供智能分级参考，不构成医学诊断或治疗建议；我同意本次照片用于分析及健康档案记录。</span></label>
+              <label><input id="researchConsent" type="checkbox"> <span>可选：同意照片经匿名化后用于模型改进；不勾选不影响本次分析。</span></label>
+              <label><input id="followupConsent" type="checkbox"> <span>可选：同意生成 7 天、14 天站内复拍提醒与愈合趋势记录。</span></label>
+              <small>正式上线前，声明文本将由法务审定；授权状态和版本将单独存证。</small>
+            </div>
+            <button id="startCameraBtn" class="notice-start" type="button">确认并开始标准化拍摄</button>
+          </div>
+        </section>
+
+        <!-- 拍摄场景 -->
+        <section id="captureScene" class="capture-scene" hidden>
+          <div class="capture-sequence-card">
+            <div class="capture-sequence-copy">
+              <span id="capturePhase" class="capture-plan-kicker">足部全景 · 1/3</span>
+              <h2 id="captureTitle">左侧视角</h2>
+              <p id="captureInstruction">从足部左侧平行拍摄，确保足跟、足弓和前足完整进入画面。</p>
+            </div>
+            <div id="captureGuide" class="capture-guide" aria-hidden="true"></div>
+          </div>
+
+          <div id="captureSlots" class="capture-slots" aria-label="五张照片拍摄进度"></div>
+
+          <div class="camera-panel">
+            <video id="video" autoplay playsinline muted></video>
+            <img id="previewImg" class="preview-image" alt="预览" />
+            <div id="cameraGuideOverlay" class="camera-guide-overlay guide-side"></div>
+            <div class="camera-placeholder" id="cameraPlaceholder">
+              <p id="cameraPlaceholderText">请将足部左侧轮廓对准虚线框</p>
+            </div>
+            <canvas id="canvas" hidden></canvas>
+          </div>
+
+          <div class="capture-actions">
+            <button class="secondary-btn" id="btnShoot" onclick="takePhoto()">📸 拍照</button>
+            <button class="secondary-btn" id="btnRetake" onclick="retake()" style="display:none;">🔄 重拍</button>
+            <button class="secondary-btn" onclick="document.getElementById('fileInput').click()">📁 相册</button>
+            <input type="file" id="fileInput" accept="image/*" class="hidden-input" onchange="handleFileSelect(this)" />
+          </div>
+
+          <div class="submit-row">
+            <button class="primary-btn capture-confirm-btn" id="btnConfirmPhoto" onclick="confirmCurrentPhoto()" disabled>确认本张并继续</button>
+            <button class="primary-btn" id="btnSubmit" onclick="submitAnalysis()" disabled>完成 0/5，暂不可提交</button>
+          </div>
+
+          <div class="capture-footer-note">
+            <span id="footerHint">请按照上方示意，将足部完整置于虚线范围内</span>
+          </div>
+        </section>
+
+        <div id="statusBox" class="status-box"></div>
+      </main>
+
+      <div id="closeupTransition" class="capture-stage-modal" hidden>
+        <div class="capture-stage-dialog">
+          <div class="capture-stage-icon">3/5</div>
+          <span class="capture-plan-kicker">足部全景已完成</span>
+          <h2>接下来拍摄创口特写</h2>
+          <p>请选择最严重的两处创口分别拍摄。让创口及周围皮肤位于画面中央，并清晰显示创缘。</p>
+          <div class="closeup-tips">
+            <span>正对创面拍摄</span>
+            <span>建议距离约 15–20 cm</span>
+            <span>避免手指或敷料遮挡</span>
+          </div>
+          <p class="capture-stage-note">如仅有一处明显创口，第 5 张可对同一创口从略有不同的角度补拍。</p>
+          <button id="startCloseupBtn" class="notice-start" type="button">开始拍摄创口特写</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 加载动画 ═══ -->
+    <div class="loading" id="loading" style="display:none;">
+      <div class="spinner"></div>
+      <p>正在分析两张创口特写并整理五张影像，请稍候…</p>
+    </div>
+
+    <!-- ═══ 报告页 Report View ═══ -->
+    <section id="reportView" class="report-view">
+      <header class="capture-header">
+        <button id="restartBtn" class="nav-icon" type="button" aria-label="重新检测">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
+        </button>
+        <h1>检测报告</h1>
+        <span></span>
+      </header>
+      <div id="reportContent"></div>
+    </section>
+
+    <!-- ═══ 历史记录 ═══ -->
+    <section id="historyView" class="report-view">
+      <header class="capture-header">
+        <button id="closeHistoryBtn" class="nav-icon" type="button" aria-label="返回">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <h1>检测历史</h1>
+        <span></span>
+      </header>
+      <div id="historyContent" style="padding:24px;"></div>
+    </section>
+
+    <!-- ═══ 首次资料录入 / 个人中心 ═══ -->
+    <section id="profileView" class="report-view profile-view">
+      <header class="capture-header">
+        <button id="closeProfileBtn" class="nav-icon" type="button" aria-label="返回">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <h1 id="profileTitle">完善个人信息</h1>
+        <span></span>
+      </header>
+      <div class="profile-page-body">
+        <div class="profile-intro">
+          <span class="profile-step">PATIENT PROFILE</span>
+          <h2 id="profileHeading">建立您的健康档案</h2>
+          <p>个人信息仅在首次使用时需要填写，后续可在个人中心修改。</p>
+        </div>
+        <form id="profileForm" class="profile-form" autocomplete="off">
+          <label class="profile-field">
+            <span>姓名 *</span>
+            <input type="text" name="name" maxlength="80" placeholder="请输入姓名" required>
+          </label>
+
+          <label class="profile-field">
+            <span>手机号 *</span>
+            <input type="tel" name="phone" maxlength="20" inputmode="tel" autocomplete="tel" pattern="1[3-9][0-9]{9}" placeholder="请输入11位手机号" required>
+          </label>
+
+          <label class="profile-field">
+            <span>年龄 *</span>
+            <input type="number" name="age" min="0" max="120" inputmode="numeric" placeholder="0–120" required>
+          </label>
+
+          <fieldset class="profile-fieldset">
+            <legend>性别 *</legend>
+            <div class="choice-grid choice-grid-two">
+              <label class="choice-card"><input type="radio" name="sex" value="male" required><span>男</span></label>
+              <label class="choice-card"><input type="radio" name="sex" value="female" required><span>女</span></label>
+            </div>
+          </fieldset>
+
+          <div class="profile-note">糖尿病足分级将在完成五张照片检测后由系统自动生成，无需自行填写。</div>
+
+          <label class="profile-field">
+            <span>居住地 <small>选填</small></span>
+            <input type="text" name="residence" maxlength="200" placeholder="选填">
+          </label>
+
+          <fieldset class="profile-fieldset">
+            <legend>饮食习惯 <small>选填，可直接跳过</small></legend>
+            <div id="dietaryOptions" class="dietary-grid">
+              <div class="profile-loading">正在加载选项…</div>
+            </div>
+          </fieldset>
+
+          <p id="profileError" class="auth-error"></p>
+          <button type="submit" id="profileSubmitBtn" class="primary-btn profile-save">保存并继续</button>
+          <button type="button" id="logoutBtn" class="profile-logout">退出当前账号</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ═══ 登录/注册弹窗 ═══ -->
+    <div id="authModal" class="auth-overlay">
+      <div class="auth-card">
+        <button class="auth-close" id="authClose" type="button" aria-label="关闭">&times;</button>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">登录</button>
+          <button class="auth-tab" data-tab="register">注册</button>
+        </div>
+
+        <form id="loginForm" class="auth-form active" autocomplete="off">
+          <label class="auth-field">
+            <span>邮箱</span>
+            <input type="email" name="email" placeholder="请输入邮箱" required autocomplete="email">
+          </label>
+          <label class="auth-field">
+            <span>密码</span>
+            <input type="password" name="password" placeholder="8-12位，含大小写字母+数字+符号" required autocomplete="current-password">
+          </label>
+          <p class="auth-error" id="loginError"></p>
+          <button type="submit" class="auth-submit">登录</button>
+        </form>
+
+        <form id="registerForm" class="auth-form" autocomplete="off">
+          <label class="auth-field">
+            <span>邮箱</span>
+            <input type="email" name="email" placeholder="请输入邮箱" required autocomplete="email">
+          </label>
+          <div class="auth-field-code">
+            <label class="auth-field" style="flex:1;margin-bottom:0;">
+              <span>验证码</span>
+              <input type="text" name="code" placeholder="6位数字" maxlength="6" required autocomplete="off">
+            </label>
+            <button type="button" class="auth-send-code" id="sendCodeBtn">获取验证码</button>
+          </div>
+          <label class="auth-field">
+            <span>设置密码</span>
+            <input type="password" name="password" placeholder="8-12位，含大小写字母+数字+符号" required autocomplete="new-password">
+          </label>
+          <p class="auth-error" id="registerError"></p>
+          <button type="submit" class="auth-submit">注册并开始检测</button>
+        </form>
+
+        <p class="auth-required">登录后可保存检测记录，并允许医生通过您登记的手机号查询档案。</p>
+      </div>
+    </div>
+
+    <!-- ═══ Toast ═══ -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+    // ══════════════════════════════════════════════
+    // 状态
+    // ══════════════════════════════════════════════
+    var state = {
+      token: localStorage.getItem('dfu_token') || '',
+      user: null,
+      profile: null,
+      dietaryOptions: [],
+      profileFirstTime: false,
+      captureIndex: 0,
+      captureFiles: {},
+      captureUrls: {},
+      pendingFile: null,
+      pendingPreviewUrl: '',
+      stream: null,
+    };
+
+    var captureSteps = [
+      {
+        key: 'left_view', short: '左侧', title: '左侧视角', overlay: 'guide-side',
+        instruction: '从足部左侧平行拍摄，确保足跟、足弓和前足完整进入画面。',
+        placeholder: '请将足部左侧轮廓对准虚线框',
+        guide: '<svg viewBox="0 0 120 90"><path d="M10 62C24 55 35 43 46 28c8-10 18-12 28-7 7 4 11 13 17 19 6 7 14 9 19 15 4 5 2 13-5 15-22 6-66 7-91 1-6-1-8-6-4-9Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="5 4"/><path d="M28 66c19 3 52 2 73-2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>'
+      },
+      {
+        key: 'right_view', short: '右侧', title: '右侧视角', overlay: 'guide-side',
+        instruction: '移动至足部右侧平行拍摄，保持与上一张相近的距离和高度。',
+        placeholder: '请将足部右侧轮廓对准虚线框',
+        guide: '<svg viewBox="0 0 120 90"><g transform="translate(120 0) scale(-1 1)"><path d="M10 62C24 55 35 43 46 28c8-10 18-12 28-7 7 4 11 13 17 19 6 7 14 9 19 15 4 5 2 13-5 15-22 6-66 7-91 1-6-1-8-6-4-9Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="5 4"/><path d="M28 66c19 3 52 2 73-2" fill="none" stroke="currentColor" stroke-width="1.5"/></g></svg>'
+      },
+      {
+        key: 'plantar_view', short: '足底', title: '足底视角', overlay: 'guide-sole',
+        instruction: '镜头正对足底，完整拍到脚趾、前足、足弓与足跟，避免倾斜。',
+        placeholder: '请将完整足底对准竖向虚线框',
+        guide: '<svg viewBox="0 0 90 120"><ellipse cx="45" cy="69" rx="24" ry="39" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="5 4"/><circle cx="23" cy="24" r="7" fill="none" stroke="currentColor"/><circle cx="36" cy="18" r="8" fill="none" stroke="currentColor"/><circle cx="51" cy="17" r="8" fill="none" stroke="currentColor"/><circle cx="65" cy="21" r="7" fill="none" stroke="currentColor"/><circle cx="76" cy="29" r="6" fill="none" stroke="currentColor"/></svg>'
+      },
+      {
+        key: 'wound_closeup_1', short: '创口1', title: '最严重创口特写 1', overlay: 'guide-wound', // gitleaks:allow -- UI field identifier, not a credential
+        instruction: '正对最严重的创口拍摄，让创口及周围皮肤占据画面中央。',
+        placeholder: '请将最严重创口置于圆形虚线中央',
+        guide: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="5 4"/><path d="M32 50c6-14 14-20 25-13 12 8 15 23 2 29-12 5-33-1-27-16Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M50 7v12M50 81v12M7 50h12M81 50h12" stroke="currentColor"/></svg>'
+      },
+      {
+        key: 'wound_closeup_2', short: '创口2', title: '最严重创口特写 2', overlay: 'guide-wound', // gitleaks:allow -- UI field identifier, not a credential
+        instruction: '拍摄第二严重创口；如仅一处明显创口，请从略有不同的角度补拍。',
+        placeholder: '请将第二处创口置于圆形虚线中央',
+        guide: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="5 4"/><path d="M32 50c6-14 14-20 25-13 12 8 15 23 2 29-12 5-33-1-27-16Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M50 7v12M50 81v12M7 50h12M81 50h12" stroke="currentColor"/></svg>'
+      }
+    ];
+
+    // ══════════════════════════════════════════════
+    // DOM 引用
+    // ══════════════════════════════════════════════
+    var $ = function(id) { return document.getElementById(id); };
+    var landing    = $('landing');
+    var captureApp = $('captureApp');
+    var reportView = $('reportView');
+    var historyView = $('historyView');
+    var profileView = $('profileView');
+    var video      = $('video');
+    var canvas     = $('canvas');
+    var statusBox  = $('statusBox');
+    var captureNotice = $('captureNotice');
+    var captureScene  = $('captureScene');
+    var startCameraBtn = $('startCameraBtn');
+    var footerHint = $('footerHint');
+
+    // ══════════════════════════════════════════════
+    // 初始化
+    // ══════════════════════════════════════════════
+    function authHeaders(extra) {
+      var headers = extra || {};
+      if (state.token) headers.Authorization = 'Bearer ' + state.token;
+      return headers;
+    }
+
+    function apiJSON(url, options) {
+      options = options || {};
+      options.headers = authHeaders(options.headers || {});
+      var controller = new AbortController();
+      options.signal = controller.signal;
+      var timer = setTimeout(function() { controller.abort(); }, 15000);
+      return fetch(url, options).then(function(response) {
+        return response.json().catch(function() { return {}; }).then(function(data) {
+          clearTimeout(timer);
+          if (!response.ok) throw new Error(data.detail || data.message || '请求失败');
+          return data;
+        });
+      }).catch(function(error) {
+        clearTimeout(timer);
+        throw error;
+      });
+    }
+
+    (function init() {
+      if (state.token) {
+        apiJSON('api/email/me')
+          .then(function(d) {
+            if (d.success) {
+              state.user = d.data;
+              updateUIForLogin();
+              loadPatientProfile('session');
+            }
+          })
+          .catch(function() { logout(false); });
+      }
+    })();
+
+    function updateUIForLogin() {
+      $('navAccountLabel').textContent = state.user ? '个人中心' : '登录 / 注册';
+      $('navUserBtn').setAttribute('aria-label', state.user ? '个人中心' : '登录或注册');
+      $('navHistoryBtn').style.display = state.user ? '' : 'none';
+    }
+    updateUIForLogin();
+
+    // ══════════════════════════════════════════════
+    // 开始按钮 → 检查登录
+    // ══════════════════════════════════════════════
+    function onStartClick() {
+      if (state.token && state.user) {
+        if (state.profile && state.profile.profile_completed) {
+          showCaptureNotice();
+        } else {
+          loadPatientProfile('capture');
+        }
+      } else {
+        openAuth();
+      }
+    }
+
+    $('btnStart').addEventListener('click', onStartClick);
+    $('btnStartBottom').addEventListener('click', onStartClick);
+
+    // ══════════════════════════════════════════════
+    // 登录/注册弹窗
+    // ══════════════════════════════════════════════
+    var authModal = {
+      overlay: $('authModal'),
+      loginForm: $('loginForm'),
+      registerForm: $('registerForm'),
+      loginError: $('loginError'),
+      registerError: $('registerError'),
+      sendCodeBtn: $('sendCodeBtn'),
+      codeCooldown: 0,
+      openForCapture: false,
+    };
+
+    function openAuth() {
+      authModal.overlay.classList.add('active');
+      authModal.openForCapture = true;
+    }
+
+    function openUserPanel() {
+      if (!state.user) {
+        openAuth();
+        return;
+      }
+      loadPatientProfile('profile');
+    }
+
+    $('authClose').addEventListener('click', function() {
+      authModal.overlay.classList.remove('active');
+    });
+
+
+    // 标签切换
+    document.querySelectorAll('#authModal .auth-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var t = this.dataset.tab;
+        document.querySelectorAll('#authModal .auth-tab').forEach(function(el) {
+          el.classList.toggle('active', el.dataset.tab === t);
+        });
+        authModal.loginForm.classList.toggle('active', t === 'login');
+        authModal.registerForm.classList.toggle('active', t === 'register');
+        authModal.loginError.textContent = '';
+        authModal.registerError.textContent = '';
+        authModal.registerError.style.color = '#a43a2f';
+      });
+    });
+
+    // 发送验证码
+    authModal.sendCodeBtn.addEventListener('click', function() {
+      if (authModal.codeCooldown > 0) return;
+      var email = authModal.registerForm.email.value.trim();
+      if (!email) {
+        authModal.registerError.textContent = '请先输入邮箱';
+        return;
+      }
+      authModal.sendCodeBtn.disabled = true;
+      authModal.sendCodeBtn.textContent = '发送中...';
+      authModal.registerError.textContent = '';
+      authModal.registerError.style.color = '#a43a2f';
+
+      fetch('api/email/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.success) {
+            authModal.registerError.textContent = d.message || '验证码已发送，请查收邮件';
+            authModal.registerError.style.color = '#30d158';
+            authModal.codeCooldown = 60;
+            tickCooldown();
+          } else {
+            authModal.registerError.textContent = d.message || d.detail || '发送失败';
+            authModal.registerError.style.color = '#a43a2f';
+            authModal.sendCodeBtn.disabled = false;
+            authModal.sendCodeBtn.textContent = '获取验证码';
+          }
+        })
+        .catch(function(e) {
+          authModal.registerError.textContent = '网络错误：' + e.message;
+          authModal.registerError.style.color = '#a43a2f';
+          authModal.sendCodeBtn.disabled = false;
+          authModal.sendCodeBtn.textContent = '获取验证码';
+        });
+    });
+
+    function tickCooldown() {
+      if (authModal.codeCooldown <= 0) {
+        authModal.sendCodeBtn.disabled = false;
+        authModal.sendCodeBtn.textContent = '获取验证码';
+        return;
+      }
+      authModal.sendCodeBtn.textContent = authModal.codeCooldown + 's';
+      authModal.codeCooldown--;
+      setTimeout(tickCooldown, 1000);
+    }
+
+    // 登录提交
+    authModal.loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      authModal.loginError.textContent = '';
+      var payload = {
+        email: this.email.value.trim(),
+        password: this.password.value,
+      };
+      fetch('api/email/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.success) {
+            setAuth(d.data);
+            authModal.overlay.classList.remove('active');
+            showToast('登录成功！');
+            loadPatientProfile('capture');
+          } else {
+            authModal.loginError.textContent = d.message || d.detail || '登录失败';
+          }
+        })
+        .catch(function(e) {
+          authModal.loginError.textContent = '网络错误：' + e.message;
+        });
+    });
+
+    // 注册提交
+    authModal.registerForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      authModal.registerError.textContent = '';
+      authModal.registerError.style.color = '#a43a2f';
+      var payload = {
+        email: this.email.value.trim(),
+        code: this.code.value.trim(),
+        password: this.password.value,
+      };
+      fetch('api/email/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.success) {
+            setAuth(d.data);
+            authModal.overlay.classList.remove('active');
+            showToast('注册成功！');
+            loadPatientProfile('capture');
+          } else {
+            authModal.registerError.textContent = d.message || d.detail || '注册失败';
+          }
+        })
+        .catch(function(e) {
+          authModal.registerError.textContent = '网络错误：' + e.message;
+        });
+    });
+
+    function setAuth(data) {
+      state.token = data.access_token;
+      state.user = data.user;
+      localStorage.setItem('dfu_token', state.token);
+      updateUIForLogin();
+    }
+
+    // ══════════════════════════════════════════════
+    // 患者首次资料录入 / 个人中心
+    // ══════════════════════════════════════════════
+
+    function loadPatientProfile(mode) {
+      return Promise.all([
+        apiJSON('api/patient/profile'),
+        state.dietaryOptions.length ? Promise.resolve({ options: state.dietaryOptions }) : apiJSON('api/patient/dietary-options')
+      ]).then(function(results) {
+        state.profile = results[0].profile;
+        state.dietaryOptions = results[1].options || [];
+        if (!state.profile.profile_completed) {
+          showProfileView(true);
+        } else if (mode === 'capture') {
+          showCaptureNotice();
+        } else if (mode === 'profile') {
+          showProfileView(false);
+        }
+      }).catch(function(error) {
+        showToast(error.message || '个人资料加载失败');
+      });
+    }
+
+    function renderDietaryOptions(selected) {
+      selected = selected || [];
+      var html = '';
+      state.dietaryOptions.forEach(function(option) {
+        var checked = selected.indexOf(option.code) >= 0 ? ' checked' : '';
+        html += '<label class="dietary-card">' +
+          '<input type="checkbox" name="dietary_habits" value="' + option.code + '"' + checked + '>' +
+          '<span><strong>' + option.label + '</strong><small>' + (option.description || '') + '</small></span>' +
+        '</label>';
+      });
+      $('dietaryOptions').innerHTML = html;
+    }
+
+    function showProfileView(firstTime) {
+      state.profileFirstTime = firstTime;
+      stopCamera();
+      landing.style.display = 'none';
+      captureApp.classList.remove('active');
+      reportView.classList.remove('active');
+      historyView.classList.remove('active');
+      profileView.classList.add('active');
+      $('profileTitle').textContent = firstTime ? '完善个人信息' : '个人中心';
+      $('profileHeading').textContent = firstTime ? '建立您的健康档案' : '查看和修改个人信息';
+      $('profileSubmitBtn').textContent = firstTime ? '保存并继续' : '保存修改';
+      $('logoutBtn').style.display = firstTime ? 'none' : 'block';
+      $('closeProfileBtn').style.visibility = firstTime ? 'hidden' : '';
+      $('profileError').textContent = '';
+
+      var form = $('profileForm');
+      form.elements.name.value = state.profile.name || '';
+      form.elements.phone.value = state.profile.phone || '';
+      form.elements.age.value = state.profile.age == null ? '' : state.profile.age;
+      form.elements.residence.value = state.profile.residence || '';
+      Array.prototype.forEach.call(form.querySelectorAll('input[name="sex"]'), function(input) {
+        input.checked = input.value === state.profile.sex;
+      });
+      renderDietaryOptions(state.profile.dietary_habits || []);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+
+    $('profileForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var form = this;
+      var checkedSex = form.querySelector('input[name="sex"]:checked');
+      var checkedHabits = Array.prototype.map.call(
+        form.querySelectorAll('input[name="dietary_habits"]:checked'),
+        function(input) { return input.value; }
+      );
+      var name = form.elements.name.value.trim();
+      if (!name) {
+        $('profileError').textContent = '请填写姓名';
+        return;
+      }
+      if (!checkedSex) {
+        $('profileError').textContent = '请选择性别';
+        return;
+      }
+      var phone = form.elements.phone.value.trim();
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        $('profileError').textContent = '请输入有效的11位手机号';
+        return;
+      }
+      var payload = {
+        name: name,
+        phone: phone,
+        age: Number(form.elements.age.value),
+        sex: checkedSex.value,
+        residence: form.elements.residence.value.trim(),
+        dietary_habits: checkedHabits,
+      };
+      $('profileSubmitBtn').disabled = true;
+      $('profileSubmitBtn').textContent = '保存中…';
+      $('profileError').textContent = '';
+      apiJSON('api/patient/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function(data) {
+        state.profile = data.profile;
+        $('profileSubmitBtn').disabled = false;
+        showToast('个人信息已保存');
+        if (state.profileFirstTime) {
+          showCaptureNotice();
+        } else {
+          profileView.classList.remove('active');
+          landing.style.display = '';
+        }
+      }).catch(function(error) {
+        $('profileSubmitBtn').disabled = false;
+        $('profileSubmitBtn').textContent = state.profileFirstTime ? '保存并继续' : '保存修改';
+        $('profileError').textContent = error.message || '保存失败';
+      });
+    });
+
+    $('closeProfileBtn').addEventListener('click', function() {
+      profileView.classList.remove('active');
+      landing.style.display = '';
+    });
+
+    $('logoutBtn').addEventListener('click', function() { logout(true); });
+
+    function logout(showMessage) {
+      localStorage.removeItem('dfu_token');
+      state.token = '';
+      state.user = null;
+      state.profile = null;
+      profileView.classList.remove('active');
+      historyView.classList.remove('active');
+      reportView.classList.remove('active');
+      captureApp.classList.remove('active');
+      landing.style.display = '';
+      updateUIForLogin();
+      if (showMessage) showToast('已退出登录');
+    }
+
+    // ══════════════════════════════════════════════
+    // 拍摄流程
+    // ══════════════════════════════════════════════
+
+    function showCaptureNotice() {
+      stopCamera();
+      landing.style.display = 'none';
+      reportView.classList.remove('active');
+      historyView.classList.remove('active');
+      profileView.classList.remove('active');
+      $('loading').style.display = 'none';
+      captureApp.classList.add('active');
+      captureNotice.hidden = false;
+      captureScene.hidden = true;
+      setStatus('');
+      resetCaptureState();
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+
+    // 返回首页
+    $('backLanding').addEventListener('click', function() {
+      stopCamera();
+      captureApp.classList.remove('active');
+      landing.style.display = '';
+      historyView.classList.remove('active');
+    });
+    $('closeCapture').addEventListener('click', function() {
+      stopCamera();
+      captureApp.classList.remove('active');
+      landing.style.display = '';
+      historyView.classList.remove('active');
+    });
+
+    // 开始拍摄
+    startCameraBtn.addEventListener('click', function() {
+      if (!$('analysisConsent').checked) {
+        showToast('请先确认必要知情同意及非诊断声明');
+        return;
+      }
+      captureNotice.hidden = true;
+      captureScene.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      renderCaptureStep();
+      initCamera();
+    });
+
+    $('startCloseupBtn').addEventListener('click', function() {
+      $('closeupTransition').hidden = true;
+      captureScene.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      renderCaptureStep();
+      initCamera();
+    });
+
+    function renderCaptureSlots() {
+      $('captureSlots').innerHTML = captureSteps.map(function(step, index) {
+        var classes = ['capture-slot'];
+        if (state.captureFiles[step.key]) classes.push('complete');
+        if (index === state.captureIndex) classes.push('active');
+        return '<div class="' + classes.join(' ') + '"><strong>' +
+          (state.captureFiles[step.key] ? '✓' : (index + 1)) + '</strong>' + step.short + '</div>';
+      }).join('');
+    }
+
+    function renderCaptureStep() {
+      var step = captureSteps[state.captureIndex];
+      var phaseNumber = state.captureIndex < 3 ? (state.captureIndex + 1) + '/3' : (state.captureIndex - 2) + '/2';
+      $('capturePhase').textContent = (state.captureIndex < 3 ? '足部全景 · ' : '创口特写 · ') + phaseNumber;
+      $('captureTitle').textContent = step.title;
+      $('captureInstruction').textContent = step.instruction;
+      $('captureGuide').innerHTML = step.guide;
+      $('cameraGuideOverlay').className = 'camera-guide-overlay ' + step.overlay;
+      $('cameraPlaceholderText').textContent = step.placeholder;
+      footerHint.textContent = step.placeholder;
+      renderCaptureSlots();
+      var completed = Object.keys(state.captureFiles).length;
+      $('btnSubmit').disabled = completed !== captureSteps.length;
+      $('btnSubmit').textContent = completed === captureSteps.length ? '提交 5 张照片并分析' : '完成 ' + completed + '/5，暂不可提交';
+    }
+
+    // ══════════════════════════════════════════════
+    // 相机
+    // ══════════════════════════════════════════════
+
+    function initCamera() {
+      var placeholder = $('cameraPlaceholder');
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        placeholder.innerHTML = '<p id="cameraPlaceholderText" style="color:#ff4d4f;">您的设备不支持相机访问<br>请使用「相册」按钮上传图片</p>';
+        setStatus('当前浏览器不支持摄像头采集，请使用 HTTPS 环境。', true);
+        return;
+      }
+      navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 1280 } },
+        audio: false,
+      })
+        .then(function(s) {
+          state.stream = s;
+          video.srcObject = s;
+          video.style.display = 'block';
+          placeholder.style.display = 'none';
+          setStatus('');
+        })
+        .catch(function() {
+          placeholder.innerHTML = '<p id="cameraPlaceholderText" style="color:#ff9f0a;">无法访问相机<br>请使用「相册」按钮上传图片</p>';
+          setStatus('无法打开摄像头，请检查浏览器权限后使用相册上传。', true);
+        });
+    }
+
+    function stopCamera() {
+      if (state.stream) {
+        state.stream.getTracks().forEach(function(t) { t.stop(); });
+        state.stream = null;
+      }
+      if (video) video.srcObject = null;
+      video.style.display = 'none';
+      $('cameraPlaceholder').style.display = '';
+    }
+
+    function takePhoto() {
+      if (!video.srcObject) return;
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 640;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(function(blob) {
+        var step = captureSteps[state.captureIndex];
+        setPendingPhoto(new File([blob], step.key + '.jpg', { type: 'image/jpeg' }));
+      }, 'image/jpeg', 0.92);
+    }
+
+    function retake() {
+      clearPendingPhoto(true);
+      initCamera();
+      footerHint.textContent = captureSteps[state.captureIndex].placeholder;
+    }
+
+    function handleFileSelect(input) {
+      var file = input.files[0];
+      if (!file) return;
+      setPendingPhoto(file);
+    }
+
+    function setPendingPhoto(file) {
+      clearPendingPhoto(true);
+      state.pendingFile = file;
+      state.pendingPreviewUrl = URL.createObjectURL(file);
+      var previewImg = $('previewImg');
+      previewImg.src = state.pendingPreviewUrl;
+      previewImg.classList.add('visible');
+      video.style.display = 'none';
+      $('cameraPlaceholder').style.display = 'none';
+      $('btnShoot').style.display = 'none';
+      $('btnRetake').style.display = '';
+      $('btnConfirmPhoto').disabled = false;
+      stopCamera();
+      footerHint.textContent = '请确认画面清晰、视角正确，然后保存本张照片';
+    }
+
+    function clearPendingPhoto(revokeUrl) {
+      if (revokeUrl && state.pendingPreviewUrl) URL.revokeObjectURL(state.pendingPreviewUrl);
+      state.pendingFile = null;
+      state.pendingPreviewUrl = '';
+      var previewImg = $('previewImg');
+      previewImg.classList.remove('visible');
+      previewImg.src = '';
+      video.style.display = 'none';
+      $('cameraPlaceholder').style.display = '';
+      $('btnShoot').style.display = '';
+      $('btnRetake').style.display = 'none';
+      $('btnConfirmPhoto').disabled = true;
+      $('fileInput').value = '';
+    }
+
+    function confirmCurrentPhoto() {
+      if (!state.pendingFile) {
+        showToast('请先拍摄或选择当前视角的照片');
+        return;
+      }
+      var step = captureSteps[state.captureIndex];
+      if (state.captureUrls[step.key]) URL.revokeObjectURL(state.captureUrls[step.key]);
+      state.captureFiles[step.key] = state.pendingFile;
+      state.captureUrls[step.key] = state.pendingPreviewUrl;
+      state.pendingFile = null;
+      state.pendingPreviewUrl = '';
+      clearPendingPhoto(false);
+      renderCaptureSlots();
+
+      if (state.captureIndex === 2) {
+        state.captureIndex = 3;
+        stopCamera();
+        captureScene.hidden = true;
+        $('closeupTransition').hidden = false;
+        return;
+      }
+      if (state.captureIndex < captureSteps.length - 1) {
+        state.captureIndex += 1;
+        renderCaptureStep();
+        initCamera();
+        return;
+      }
+      stopCamera();
+      renderCaptureStep();
+      $('btnConfirmPhoto').disabled = true;
+      footerHint.textContent = '五张照片已完成，请提交分析';
+      showToast('五张照片已采集完成');
+    }
+
+    function resetCaptureState() {
+      clearPendingPhoto(true);
+      Object.keys(state.captureUrls).forEach(function(key) {
+        URL.revokeObjectURL(state.captureUrls[key]);
+      });
+      state.captureIndex = 0;
+      state.captureFiles = {};
+      state.captureUrls = {};
+      $('closeupTransition').hidden = true;
+      $('btnSubmit').disabled = true;
+      $('btnSubmit').textContent = '完成 0/5，暂不可提交';
+      renderCaptureSlots();
+    }
+
+    // ══════════════════════════════════════════════
+    // 提交分析
+    // ══════════════════════════════════════════════
+
+    function submitAnalysis() {
+      var missing = captureSteps.filter(function(step) { return !state.captureFiles[step.key]; });
+      if (missing.length) {
+        showToast('还缺少：' + missing.map(function(step) { return step.title; }).join('、'));
+        return;
+      }
+
+      captureApp.classList.remove('active');
+      $('loading').style.display = 'block';
+      reportView.classList.remove('active');
+      historyView.classList.remove('active');
+      landing.style.display = 'none';
+
+      var form = new FormData();
+      captureSteps.forEach(function(step) {
+        var file = state.captureFiles[step.key];
+        form.append(step.key, file, file.name || (step.key + '.jpg'));
+      });
+      form.append('analysis_consent', $('analysisConsent').checked ? 'true' : 'false');
+      form.append('research_consent', $('researchConsent').checked ? 'true' : 'false');
+      form.append('followup_consent', $('followupConsent').checked ? 'true' : 'false');
+
+      var headers = {};
+      if (state.token) {
+        headers['Authorization'] = 'Bearer ' + state.token;
+      }
+
+      fetch('api/predict-multi', { method: 'POST', body: form, headers: headers })
+        .then(function(r) {
+          return r.json().catch(function() { return {}; }).then(function(data) {
+            if (!r.ok) throw new Error(data.detail || data.message || '请求失败');
+            return data;
+          });
+        })
+        .then(function(data) {
+          $('loading').style.display = 'none';
+          if (data.status === 'ok') {
+            resetCaptureState();
+            showReport(data);
+          } else if (data.status === 'rejected') {
+            returnToFailedCapture(data);
+          } else {
+            throw new Error(data.message || '分析失败');
+          }
+        })
+        .catch(function(e) {
+          $('loading').style.display = 'none';
+          showToast('请求失败：' + e.message);
+          captureApp.classList.add('active');
+          captureScene.hidden = false;
+          landing.style.display = 'none';
+          renderCaptureStep();
+        });
+    }
+
+    function returnToFailedCapture(data) {
+      var failedIndex = captureSteps.findIndex(function(step) { return step.key === data.failed_role; });
+      if (failedIndex < 0) failedIndex = 3;
+      var failedStep = captureSteps[failedIndex];
+      if (state.captureUrls[failedStep.key]) URL.revokeObjectURL(state.captureUrls[failedStep.key]);
+      delete state.captureUrls[failedStep.key];
+      delete state.captureFiles[failedStep.key];
+      state.captureIndex = failedIndex;
+      captureApp.classList.add('active');
+      captureScene.hidden = false;
+      landing.style.display = 'none';
+      renderCaptureStep();
+      showToast(data.reason || '创口特写未通过检查，请重新拍摄');
+      initCamera();
+    }
+
+    // ══════════════════════════════════════════════
+    // 报告展示
+    // ══════════════════════════════════════════════
+
+    function gradeColor(grade) {
+      var colors = {
+        'Normal': '#34c759', 'Grade 0': '#64d2ff', 'Grade 1': '#30d158',
+        'Grade 2': '#ffd60a', 'Grade 3': '#ff9f0a',
+        'Grade 4': '#ff453a', 'Grade 5': '#8e1b1b'
+      };
+      return colors[grade] || '#8e8e93';
+    }
+
+    function urgencyForGrade(grade) {
+      if (grade === 'Normal') return '日常预防';
+      if (grade === 'Grade 0') return '定期评估';
+      if (grade === 'Grade 1') return '常规';
+      if (grade === 'Grade 2') return '尽快就诊';
+      if (grade === 'Grade 3') return '紧急就诊';
+      if (grade === 'Grade 4') return '立即急诊';
+      return '紧急抢救';
+    }
+
+    function showReport(data) {
+      var pred = data.prediction;
+      var rec = data.recommendations;
+
+      captureApp.classList.remove('active');
+      reportView.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'auto' });
+
+      // 分级结果 Hero
+      var gradeHtml =
+        '<section class="report-hero">' +
+          '<p class="brand-kicker">DFU INTELLIGENT DETECTION</p>' +
+          '<h2>Wagner 分级结果</h2>' +
+          '<div class="score-number">' + pred.grade + '</div>' +
+          '<p>置信度：' + (pred.confidence * 100).toFixed(1) + '%</p>' +
+          (pred.binary_probability_ulcer != null ?
+            '<p style="font-size:12px;opacity:.75;">溃疡筛查概率：' + (pred.binary_probability_ulcer * 100).toFixed(1) + '%</p>' : '') +
+          (pred.is_borderline ?
+            '<div style="margin-top:12px;padding:10px 16px;background:#fff3cd;border-radius:10px;font-size:13px;color:#856404;display:inline-block;">' +
+              '⚠️ 边界情况 — 次选可能：' + pred.secondary_grade + '（' + (pred.secondary_confidence * 100).toFixed(1) + '%）' +
+            '</div>' : '') +
+          '<div style="margin-top:14px;">' +
+            '<span class="urgency-tag urgency-' + rec.urgency + '">' + rec.urgency + '</span>' +
+          '</div>' +
+        '</section>';
+
+      // 只展示概率最高的两个分级，完整概率仍由后端保存
+      var grades = pred.probabilities.length === 7
+        ? ['Normal', 'Grade 0', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5']
+        : ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4'];
+      var topProbabilities = pred.probabilities.map(function(probability, index) {
+        return { grade: grades[index], probability: Number(probability || 0) };
+      }).sort(function(a, b) {
+        return b.probability - a.probability;
+      }).slice(0, 2);
+      var probsHtml = '<section class="report-grid">';
+      topProbabilities.forEach(function(item) {
+        var pct = (item.probability * 100).toFixed(1);
+        probsHtml +=
+          '<div class="metric-card">' +
+            '<strong><span>' + item.grade + '</span><span>' + pct + '%</span></strong>' +
+            '<div class="bar"><i style="width:' + pct + '%;background:' + gradeColor(item.grade) + ';"></i></div>' +
+          '</div>';
+      });
+      probsHtml += '</section>';
+
+      // 建议报告
+      var reportHtml = '<section class="report-text">' + data.report_html + '</section>';
+
+      // 底部操作
+      var actionsHtml =
+        '<div style="padding:0 24px 48px;display:flex;gap:12px;">' +
+          '<button class="secondary-btn" onclick="restartDetection()" style="flex:1;">重新检测</button>' +
+        '</div>';
+
+      $('reportContent').innerHTML = gradeHtml + probsHtml + reportHtml + actionsHtml;
+    }
+
+    function restartDetection() {
+      reportView.classList.remove('active');
+      showCaptureNotice();
+    }
+
+    $('restartBtn').addEventListener('click', function() {
+      stopCamera();
+      reportView.classList.remove('active');
+      showCaptureNotice();
+    });
+
+    // ══════════════════════════════════════════════
+    // 历史记录
+    // ══════════════════════════════════════════════
+
+    function loadHistory() {
+      if (!state.token) {
+        openAuth();
+        return;
+      }
+      profileView.classList.remove('active');
+      fetch('api/records', { headers: { Authorization: 'Bearer ' + state.token } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          var html = '';
+          if (!d.records || d.records.length === 0) {
+            html = '<p style="text-align:center;color:#8e8e93;padding:48px 0;">暂无检测记录</p>';
+          } else {
+            d.records.forEach(function(r) {
+              var color = gradeColor(r.grade);
+              html +=
+                '<div class="history-item" onclick="loadRecordDetail(' + r.id + ')" style="padding:16px;margin-bottom:12px;background:#fff;border:1px solid #e5e5ea;border-radius:12px;cursor:pointer;">' +
+                  '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+                    '<div style="display:flex;align-items:center;gap:10px;">' +
+                      '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:' + color + ';"></span>' +
+                      '<strong>' + r.grade + '</strong>' +
+                      '<span style="color:#8e8e93;font-size:13px;">' + (r.confidence * 100).toFixed(1) + '%</span>' +
+                    '</div>' +
+                    '<span style="color:#aeaeb2;font-size:12px;">' + (r.created_at || '') + '</span>' +
+                  '</div>' +
+                  (r.is_borderline ? '<div style="font-size:12px;color:#856404;margin-top:6px;">⚠️ 边界情况</div>' : '') +
+                '</div>';
+            });
+          }
+          $('historyContent').innerHTML = html;
+          landing.style.display = 'none';
+          captureApp.classList.remove('active');
+          reportView.classList.remove('active');
+          historyView.classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        })
+        .catch(function(e) {
+          showToast('加载历史记录失败');
+        });
+    }
+
+    function loadRecordDetail(id) {
+      fetch('api/records/' + id, { headers: { Authorization: 'Bearer ' + state.token } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.record && d.record.report_html) {
+            historyView.classList.remove('active');
+            var pred = {
+              grade: d.record.grade,
+              confidence: d.record.confidence,
+              is_borderline: d.record.is_borderline,
+              secondary_grade: d.record.secondary_grade,
+              secondary_confidence: d.record.secondary_confidence,
+              probabilities: Array.isArray(d.record.probabilities) ? d.record.probabilities : JSON.parse(d.record.probabilities || '[]'),
+              model_version: d.record.model_version,
+            };
+            var rec = { urgency: urgencyForGrade(d.record.grade) };
+            showReport({ record_id: d.record.id, prediction: pred, recommendations: rec, report_html: d.record.report_html });
+          }
+        });
+    }
+
+    $('closeHistoryBtn').addEventListener('click', function() {
+      historyView.classList.remove('active');
+      landing.style.display = '';
+    });
+
+    // ══════════════════════════════════════════════
+    // 工具函数
+    // ══════════════════════════════════════════════
+
+    function setStatus(message, isError) {
+      statusBox.textContent = message || '';
+      statusBox.className = message ? 'status-box active' + (isError ? ' error-text' : '') : 'status-box';
+    }
+
+    function showToast(msg) {
+      var el = $('toast');
+      el.textContent = msg;
+      el.classList.add('active');
+      clearTimeout(el._t);
+      el._t = setTimeout(function() { el.classList.remove('active'); }, 2500);
+    }
+
+    function showRejection(reason) {
+      // 回到首页并显示醒目的拒绝提示
+      landing.style.display = '';
+      captureApp.classList.remove('active');
+      reportView.classList.remove('active');
+      historyView.classList.remove('active');
+      window.scrollTo({ top: 0, behavior: 'auto' });
+
+      // 在 Hero 区上方插入警告横幅
+      var banner = document.createElement('div');
+      banner.className = 'rejection-banner';
+      banner.innerHTML =
+        '<div style="display:flex;align-items:flex-start;gap:12px;text-align:left;">' +
+          '<span style="font-size:28px;flex-shrink:0;">⚠️</span>' +
+          '<div>' +
+            '<strong style="font-size:16px;">无法分析该图片</strong>' +
+            '<p style="margin:8px 0 0;font-size:13px;color:#48484a;line-height:1.6;">' + reason + '</p>' +
+            '<p style="margin:10px 0 0;font-size:12px;color:#8e8e93;">请上传足部溃疡伤口的近景、清晰照片。随机图片、风景、文档等非伤口图片无法通过检测。</p>' +
+          '</div>' +
+        '</div>';
+      banner.style.cssText =
+        'margin:16px 18px;padding:18px 20px;background:#fff3cd;border:1px solid #ffc107;border-radius:14px;color:#856404;';
+
+      var shell = document.querySelector('.mobile-shell');
+      var hero = document.querySelector('.mobile-hero');
+      if (shell && hero) {
+        shell.insertBefore(banner, hero);
+        // 自动移除
+        setTimeout(function() {
+          if (banner.parentNode) banner.parentNode.removeChild(banner);
+        }, 8000);
+      }
+    }
+    </script>
+    <script src="./report-redesign.js?v=20260729-dfu-ch4"></script>
+  </body>
+</html>

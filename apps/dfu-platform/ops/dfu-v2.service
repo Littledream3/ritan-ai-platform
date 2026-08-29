@@ -1,0 +1,17 @@
+[Unit]
+Description=DFU v2 patient and doctor staging service
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/dfu-v2/backend
+EnvironmentFile=/home/ubuntu/dfu-v2/.env
+Environment=PYTHONPATH=/home/ubuntu/dfu-v2/vendor
+ExecStart=/home/ubuntu/lanqiao/lianqiao/bin/python3 -m uvicorn main:app --host 127.0.0.1 --port 8004
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

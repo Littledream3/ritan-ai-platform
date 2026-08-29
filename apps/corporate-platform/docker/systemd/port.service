@@ -1,0 +1,30 @@
+# Systemd 服务 — 非 Docker 方式直接运行 FastAPI
+# 安装: sudo cp docker/systemd/port.service /etc/systemd/system/
+#       sudo systemctl daemon-reload
+#       sudo systemctl enable --now port
+#
+# 前置条件: MySQL + Redis 容器已启动 (docker compose up -d mysql redis)
+
+[Unit]
+Description=多模型 API 网关 (FastAPI)
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/port
+Environment=PATH=/home/ubuntu/port/venv/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/ubuntu/port/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8001
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/ubuntu/port/logs/uvicorn.log
+StandardError=append:/home/ubuntu/port/logs/uvicorn-error.log
+
+# 安全加固
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

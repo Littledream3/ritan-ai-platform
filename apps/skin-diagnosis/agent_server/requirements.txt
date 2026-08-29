@@ -1,0 +1,20 @@
+# ===== 核心 API 依赖 =====
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+openai>=1.0.0
+httpx>=0.25.0
+Pillow>=10.0.0
+pycryptodome>=3.19.0
+
+# ===== AI 推理 =====
+torch>=2.0.0
+torchvision>=0.15.0
+timm>=0.9.0
+
+# ===== 认证 =====
+bcrypt>=4.0.0
+PyJWT>=2.8.0
+
+# ===== 腾讯云短信（正式上线再取消注释）=====
+# tencentcloud-sdk-python>=3.0.0

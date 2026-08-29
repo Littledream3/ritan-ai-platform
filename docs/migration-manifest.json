@@ -1,0 +1,67 @@
+{
+  "snapshot_date": "2026-07-30",
+  "source_server": "203.0.113.10",
+  "server_content_modified": false,
+  "github": {
+    "repository": "https://github.com/Littledream3/ritan-ai-platform",
+    "visibility": "private",
+    "snapshot_tag": "server-snapshot-2026-07-30",
+    "content": "sanitized application source, deployment templates, database schemas and migration documentation"
+  },
+  "huggingface": {
+    "dfu_model": "https://huggingface.co/jnshhh/ritan-dfu-grading",
+    "skin_model": "https://huggingface.co/jnshhh/ritan-skin-analysis",
+    "dfu_clinical_data": "https://huggingface.co/datasets/jnshhh/ritan-dfu-clinical-data",
+    "skin_data": "https://huggingface.co/datasets/jnshhh/ritan-skin-analysis-data",
+    "dfu_training_data": "https://huggingface.co/datasets/jnshhh/ritan-dfu-training-data",
+    "encrypted_migration": "https://huggingface.co/datasets/jnshhh/ritan-server-migration-20260730",
+    "visibility": "private"
+  },
+  "anonymized_data": {
+    "dfu_assets": 1029,
+    "dfu_grade_counts": {
+      "grade0": 25,
+      "grade1": 145,
+      "grade2": 289,
+      "grade3": 245,
+      "grade4": 20,
+      "grade5": 0,
+      "normal": 25,
+      "unknown": 280
+    },
+    "skin_assets": 174,
+    "failed_assets": 0,
+    "processing": [
+      "original filenames and directory identifiers removed",
+      "content-addressed anonymous IDs",
+      "images re-encoded",
+      "EXIF removed",
+      "manifest and exported file SHA-256 verified"
+    ]
+  },
+  "encrypted_backup": {
+    "format": "AES-256-GCM",
+    "recovery_key_uploaded": false,
+    "includes": [
+      "PostgreSQL, MySQL and SQLite database backups",
+      "service logs",
+      "sanitized source snapshot",
+      "Nginx, systemd, cron and environment configuration",
+      "historical project backups",
+      "portable database schemas",
+      "Ritan runtime case studies, results and uploads",
+      "Redis RDB snapshot"
+    ]
+  },
+  "excluded": [
+    {
+      "path": "/home/ubuntu/project_all.tar.gz",
+      "reason": "large historical aggregate duplicates current projects and may contain uncontrolled legacy PII; current source, databases, media, configs and named historical backups were captured separately"
+    }
+  ],
+  "restore_security": [
+    "keep all Hugging Face repositories private",
+    "store the recovery key offline and separately from the encrypted archive",
+    "rotate database, JWT, email, API and TLS secrets after restoring to a new server"
+  ]
+}

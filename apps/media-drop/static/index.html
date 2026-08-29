@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#09253f">
+  <title>日坛 AI · 快速媒体上传</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%2309253f'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='serif' font-size='38' fill='white'%3ER%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span>R</span><div><strong>日坛 AI</strong><small>MEDIA DROP</small></div></div>
+    <div class="connection"><i></i>安全连接</div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">FAST · SIMPLE · SECURE</p>
+      <h1>快速上传图片和视频</h1>
+      <p>无需注册或登录。直接从手机相册批量选择，确认后保存到日坛 AI 独立数据服务器。</p>
+      <div class="feature-tags"><span>支持批量选择</span><span>单文件进度</span><span>自动失败重试</span></div>
+    </section>
+
+    <section id="uploadPanel" class="upload-panel">
+      <div id="dropZone" class="drop-zone">
+        <div class="upload-icon"><span></span><i></i></div>
+        <h2>选择手机中的图片或视频</h2>
+        <p>可一次选择多个文件，也可以分多次继续添加</p>
+        <button id="selectFiles" class="primary-button" type="button">选择图片和视频</button>
+        <small>支持 JPG、PNG、WebP、HEIC、MP4、MOV、WebM</small>
+        <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,video/mp4,video/quicktime,video/webm,video/x-m4v" multiple hidden>
+      </div>
+
+      <div id="queuePanel" class="queue-panel" hidden>
+        <div class="queue-heading">
+          <div><p class="eyebrow">UPLOAD QUEUE</p><h2>待上传文件</h2><p><b id="selectedCount">0</b> 个文件 · <b id="selectedSize">0 MB</b></p></div>
+          <div class="queue-actions"><button id="addMore" class="secondary-button" type="button">继续添加</button><button id="clearQueue" class="text-button" type="button">清空</button></div>
+        </div>
+        <div id="fileList" class="file-list"></div>
+        <div class="overall-card">
+          <div class="overall-copy"><span>总进度</span><strong id="overallText">等待上传</strong></div>
+          <div class="overall-track"><i id="overallBar"></i></div>
+          <p id="uploadError" class="error-text" aria-live="polite"></p>
+          <button id="uploadButton" class="primary-button upload-button" type="button">上传并保存到服务器</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="successPanel" class="success-panel" hidden>
+      <div class="success-icon">✓</div>
+      <p class="eyebrow">UPLOAD COMPLETE</p>
+      <h2>文件已安全保存</h2>
+      <p>本批次图片和视频均已保存到独立服务器存储空间。</p>
+      <div class="receipt"><span>批次编号</span><strong id="batchCode">—</strong><div><b id="savedFiles">0</b> 个文件 <b id="savedSize">0 MB</b></div></div>
+      <button id="newUpload" class="primary-button" type="button">继续上传新一批文件</button>
+    </section>
+
+    <section class="limits">
+      <div><strong>500</strong><span>单批最多文件</span></div>
+      <div><strong>25 MB</strong><span>单张图片上限</span></div>
+      <div><strong>750 MB</strong><span>单个视频上限</span></div>
+      <div><strong>20 GB</strong><span>单批总容量</span></div>
+    </section>
+    <p class="privacy">文件不提供公开浏览或下载地址；批次凭证仅保存在当前页面会话中。</p>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
