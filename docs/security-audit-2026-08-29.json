@@ -1,0 +1,38 @@
+{
+  "audit_date": "2026-08-29",
+  "scope": "sanitized public source tree and complete replacement Git history",
+  "tools": {
+    "gitleaks": "8.30.1",
+    "python": "compileall",
+    "node": "--check",
+    "image_metadata": "Pillow"
+  },
+  "results": {
+    "git_commits": 1,
+    "gitleaks_current_tree_findings": 0,
+    "gitleaks_git_history_findings": 0,
+    "gitleaks_archive_findings": 0,
+    "non_example_email_files": 0,
+    "mainland_china_mobile_files": 0,
+    "private_key_marker_files": 0,
+    "credential_url_files": 0,
+    "production_server_ip_files": 0,
+    "image_metadata_files": 0,
+    "image_read_failures": 0,
+    "python_compile_errors": 0,
+    "key_javascript_syntax_errors": 0
+  },
+  "removed_from_public_source": [
+    "legacy application copies",
+    "historical deployment snapshots",
+    "*.orig backup files",
+    "two unlicensed third-party skin-analysis screenshots",
+    "internal migration and server-layout reports",
+    "real credentials and production configuration"
+  ],
+  "notes": [
+    "Runtime secrets must be provided through untracked environment variables or a secret manager.",
+    "Patient data, uploaded clinical media, real databases, logs, model weights and private backups are not included.",
+    "The encrypted private Git-history backup and its recovery key are stored separately from this repository."
+  ]
+}

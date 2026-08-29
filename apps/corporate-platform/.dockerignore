@@ -1,0 +1,33 @@
+# Python
+__pycache__
+*.pyc
+venv/
+.venv/
+
+# Git
+.git/
+.gitignore
+
+# Data
+data/
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# Env (will be provided at runtime)
+.env.local
+.env.*
+
+# Docs
+*.md
+!TASKS.md
+
+# Admin source (already built in Docker multi-stage)
+admin/node_modules/
+admin/dist/
+
+# Docker
+docker/mysql/
+docker/redis/

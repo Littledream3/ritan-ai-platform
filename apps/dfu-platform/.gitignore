@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.pytest_cache/
+tests/*.db
+.playwright-cli/
+output/playwright/
+tests/*.log
+tests/*.sql
+tests/.tmp/
+
+# Patient data and runtime state
+backend/uploads/
+backend/dfu.db
+backend/dfu_v2.db
+backend/.jwt_secret
+
+# Large training assets and model checkpoints
+archive/
+*.pth
+
+# Local database volumes and logs
+postgres_data/
+*.log

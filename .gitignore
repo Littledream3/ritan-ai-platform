@@ -1,0 +1,62 @@
+# Secrets and runtime configuration
+**/.env
+**/.env.*
+!**/.env.example
+**/.jwt_secret
+**/*secret*
+**/*credential*
+**/*.key
+**/*.pem
+**/*.p12
+**/*.pfx
+
+# Databases and patient/media data
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/*.sql
+**/*.dump
+**/*.pgcustom
+**/uploads/
+**/media/
+**/data/
+**/backups/
+
+# Model weights belong in Hugging Face
+**/*.pth
+**/*.pt
+**/*.onnx
+**/*.ckpt
+**/*.safetensors
+**/*.h5
+
+# Dependencies and caches
+**/.venv/
+**/venv/
+**/lianqiao/
+**/node_modules/
+**/vendor/
+**/__pycache__/
+**/*.py[cod]
+**/.cache/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+
+# Logs and generated artifacts
+**/*.log
+**/nohup.out
+**/dist/
+**/build/
+**/*.tar
+**/*.tar.gz
+**/*.tgz
+**/*.zip
+**/*.7z
+
+# Editor and operating system files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/

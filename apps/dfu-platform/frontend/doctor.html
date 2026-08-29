@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFU 医生工作台</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="./doctor.css?v=20260722-native-download2">
+  </head>
+  <body>
+    <div id="doctorAuth" class="doctor-auth">
+      <section class="auth-brand-panel">
+        <div class="doctor-brand">DFU</div>
+        <p class="brand-kicker">CLINICAL WORKSPACE</p>
+        <h1>医生智能检测<br>与数据中心</h1>
+        <p>为患者建立连续的伤口评估记录，集中查看检测趋势与分级分布。</p>
+        <div class="auth-points">
+          <span>患者档案管理</span><span>医生辅助拍摄</span><span>检测数据可视化</span>
+        </div>
+      </section>
+
+      <section class="auth-form-panel">
+        <div class="auth-box">
+          <p class="eyebrow">DOCTOR PORTAL</p>
+          <h2>欢迎进入医生端</h2>
+          <div class="doctor-auth-tabs">
+            <button type="button" class="active" data-doctor-tab="login">登录</button>
+            <button type="button" data-doctor-tab="register">引荐码注册</button>
+          </div>
+
+          <form id="doctorLoginForm" class="doctor-auth-form active">
+            <label><span>医生账号</span><input name="username" required autocomplete="username" placeholder="请输入医生账号"></label>
+            <label><span>密码</span><input type="password" name="password" required autocomplete="current-password" placeholder="请输入密码"></label>
+            <p id="doctorLoginError" class="form-error"></p>
+            <button class="gold-button" type="submit">登录工作台</button>
+          </form>
+
+          <form id="doctorRegisterForm" class="doctor-auth-form">
+            <div class="form-two">
+              <label><span>医生账号</span><input name="username" minlength="4" maxlength="32" required autocomplete="username" placeholder="字母、数字或下划线"></label>
+              <label><span>真实姓名</span><input name="real_name" maxlength="80" required autocomplete="name" placeholder="请输入姓名"></label>
+            </div>
+            <div class="form-two">
+              <label><span>所属机构</span><input name="institution" maxlength="160" autocomplete="organization" placeholder="选填"></label>
+              <label><span>科室</span><input name="department" maxlength="100" autocomplete="organization-title" placeholder="选填"></label>
+            </div>
+            <label><span>执业医师证编号</span><input name="license_number" maxlength="100" required placeholder="用于人工资质审核"></label>
+        <label><span>资质证明文件</span><input type="file" name="credential" accept=".pdf,.jpg,.jpeg,.png" required><small>PDF/JPG/PNG，最大 5MB；文件仅管理员可访问</small></label>
+        <label><span>设置密码</span><input type="password" name="password" required autocomplete="new-password" placeholder="8-12位，含大小写、数字和符号"></label>
+        <label><span>引荐码</span><input type="password" name="invitation_code" required autocomplete="one-time-code" placeholder="请输入引荐码"></label>
+        <p id="doctorRegisterError" class="form-error"></p>
+        <button class="gold-button" type="submit">提交注册与资质审核</button>
+          </form>
+          <a class="back-patient" href="/patient/">返回患者端</a>
+        </div>
+      </section>
+    </div>
+
+    <div id="doctorApp" class="doctor-app" hidden>
+      <aside class="doctor-sidebar">
+        <div class="sidebar-brand"><strong>DFU</strong><span>DOCTOR</span></div>
+        <nav>
+          <button class="sidebar-item active" data-view="dashboard"><span>▦</span>工作台</button>
+          <button class="sidebar-item" data-start-flow="existing"><span>⌕</span>患者登记</button>
+          <button class="sidebar-item" data-view="profile"><span>◎</span>我的信息</button>
+        </nav>
+        <div class="doctor-account">
+          <div class="avatar" id="doctorAvatar">D</div>
+          <div><strong id="doctorName">医生</strong><small id="doctorInstitution">DFU 医生端</small></div>
+          <button id="doctorLogout" title="退出登录">↗</button>
+        </div>
+      </aside>
+
+      <main class="doctor-main">
+        <header class="doctor-topbar">
+          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
+          <div><p class="eyebrow">DFU CLINICAL WORKSPACE</p><h1 id="viewTitle">医生工作台</h1></div>
+          <div class="topbar-date" id="todayText"></div>
+        </header>
+
+        <section id="dashboardView" class="doctor-view active">
+          <div class="dashboard-intro">
+            <div><h2>患者与采集记录</h2><p>手机号用于查询患者，患者编号与住院ID用于档案追踪。</p></div>
+            <button id="refreshDashboard" class="ghost-button">刷新数据</button>
+          </div>
+          <div class="entry-grid">
+            <button class="entry-card" type="button" data-start-flow="existing"><span>⌕</span><div><strong>患者登记</strong><small>通过患者手机号精确查询，并登记本次住院记录</small></div></button>
+          </div>
+          <div class="summary-grid">
+            <article class="summary-card"><span>关联患者</span><strong id="sumPatients">0</strong><small>人</small></article>
+            <article class="summary-card"><span>检测总数</span><strong id="sumRecords">0</strong><small>次</small></article>
+            <article class="summary-card"><span>今日检测</span><strong id="sumToday">0</strong><small>次</small></article>
+            <article class="summary-card risk"><span>高风险结果</span><strong id="sumRisk">0</strong><small>Wagner 3–5级</small></article>
+          </div>
+
+          <article class="data-card records-card">
+            <div class="card-heading workbench-heading">
+              <div><h3>历史记录</h3><p>可使用手机号、患者编号、住院ID或采集记录编号精确查询</p></div>
+              <form id="workbenchSearch" class="inline-search">
+                <input name="query" maxlength="64" placeholder="手机号 / 患者编号 / 住院ID">
+                <select name="status"><option value="all">全部状态</option><option value="draft">草稿</option><option value="submitted">已归档</option></select>
+                <button class="ghost-button" type="submit">查询</button>
+              </form>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>患者编号</th><th>住院ID</th><th>患者信息</th><th>状态</th><th>资料</th><th>更新时间</th><th>操作</th></tr></thead>
+                <tbody id="encounterRows"><tr><td colspan="7" class="table-empty">暂无记录</td></tr></tbody>
+              </table>
+            </div>
+          </article>
+
+          <div class="chart-grid">
+            <article class="data-card"><div class="card-heading"><div><h3>等级分布</h3><p>当前医生检测结果</p></div></div><div id="gradeChart" class="bar-chart empty-chart">暂无数据</div></article>
+            <article class="data-card"><div class="card-heading"><div><h3>30天检测趋势</h3><p>每日检测次数</p></div></div><canvas id="trendCanvas" height="220"></canvas></article>
+          </div>
+          <div id="dietChart" hidden></div>
+        </section>
+
+        <section id="profileView" class="doctor-view">
+          <article class="data-card doctor-profile-card">
+            <div class="profile-avatar" id="profileAvatar">D</div>
+            <div><p class="eyebrow">MY PROFILE</p><h2 id="profileDoctorName">医生</h2><dl><div><dt>医生账号</dt><dd id="profileUsername">—</dd></div><div><dt>所属机构</dt><dd id="profileInstitution">—</dd></div><div><dt>科室</dt><dd id="profileDepartment">—</dd></div><div><dt>执业证编号</dt><dd id="profileLicense">—</dd></div><div><dt>资质状态</dt><dd id="profileVerification">—</dd></div></dl></div>
+          </article>
+        </section>
+
+        <section id="captureView" class="doctor-view">
+          <div class="capture-layout">
+            <aside class="workflow-steps">
+              <button class="workflow-step active" type="button" data-step="1"><span>1</span><div><strong>身份登记</strong><small>手机号与住院ID</small></div></button>
+              <button class="workflow-step" type="button" data-step="2"><span>2</span><div><strong>临床信息</strong><small>保存为草稿</small></div></button>
+              <button class="workflow-step" type="button" data-step="3"><span>3</span><div><strong>五图采集</strong><small>拍摄、选择并确认</small></div></button>
+              <button class="workflow-step" type="button" data-step="4"><span>4</span><div><strong>核对归档</strong><small>统一校验并提交</small></div></button>
+            </aside>
+
+            <div class="workflow-panel">
+              <section id="doctorStepIdentity" class="workflow-screen active">
+                <p class="eyebrow">STEP 01</p><h2 id="identityHeading">患者登记</h2>
+                <p class="screen-note" id="identityNote">输入患者手机号进行精确查询，再登记本次住院ID。</p>
+                <form id="newPatientIdentityForm" class="large-form">
+                  <label><span>本次住院ID <b>*</b></span><input name="admission_id" maxlength="64" autocomplete="off" placeholder="例如：ZY202600102"></label>
+                  <p class="field-help">住院ID用于识别本次住院，字母会自动转为大写。</p>
+                  <p id="newIdentityError" class="form-error"></p>
+                  <div class="button-row"><button class="ghost-button" id="backToPatientLookup" type="button">返回查询</button><button class="gold-button" type="submit">下一步</button></div>
+                </form>
+                <form id="existingPatientLookupForm" class="large-form" hidden>
+                  <label><span>患者手机号</span><input name="query" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="请输入11位手机号"></label>
+                  <button class="ghost-button" type="submit">精确查询</button>
+                  <div id="lookupPatientResult" class="lookup-result" hidden></div>
+                  <div id="newPatientDecision" class="new-patient-decision" hidden>
+                    <strong>未找到该手机号对应的患者档案</strong>
+                    <p>请先核对手机号。确认是首次就诊的新患者后，再为其建立档案。</p>
+                    <button id="confirmCreateNewPatient" class="gold-button" type="button">建立新患者档案</button>
+                  </div>
+                  <label id="newAdmissionField" hidden><span>本次住院ID <b>*</b></span><input name="admission_id" maxlength="64" autocomplete="off" placeholder="请输入本次新的住院ID"></label>
+                  <p id="lookupError" class="form-error"></p>
+                  <div class="button-row"><button class="ghost-button" type="button" data-view-dashboard>返回工作台</button><button id="existingIdentityNext" class="gold-button" type="button" disabled>确认患者并下一步</button></div>
+                </form>
+              </section>
+
+              <section id="doctorStepProfile" class="workflow-screen">
+                <div class="patient-confirm" id="draftIdentity"></div>
+                <p class="eyebrow">STEP 02</p><h2>患者临床信息</h2>
+                <p class="screen-note">手机号、年龄、性别和糖尿病等级将在最终归档时统一校验；姓名、居住地和饮食习惯均为选填。</p>
+                <form id="doctorPatientProfileForm" class="large-form" novalidate>
+                  <div class="form-two">
+                    <label><span>姓名 <small>选填</small></span><input name="name" maxlength="80" placeholder="选填"></label>
+                    <label><span>手机号 <b>*</b></span><input name="phone" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="请输入11位手机号"></label>
+                    <label><span>年龄 <b>*</b></span><input name="age" type="number" min="0" max="120" inputmode="numeric" placeholder="0–120"></label>
+                  </div>
+                  <fieldset><legend>性别 <b>*</b></legend><div class="doctor-choice-grid three">
+                    <label><input type="radio" name="sex" value="male"><span>男</span></label>
+                    <label><input type="radio" name="sex" value="female"><span>女</span></label>
+                    <label><input type="radio" name="sex" value="other"><span>其他</span></label>
+                  </div></fieldset>
+                  <label><span>糖尿病等级 <b>*</b></span><select name="diabetes_grade"><option value="">请选择</option><option value="0">0级</option><option value="1">1级</option><option value="2">2级</option><option value="3">3级</option><option value="4">4级</option><option value="5">5级</option><option value="unknown">未知</option></select></label>
+                  <label><span>居住地 <small>选填</small></span><input name="residence" maxlength="200" placeholder="选填"></label>
+                  <fieldset><legend>饮食习惯 <small>选填，可直接跳过</small></legend><div id="doctorDietaryOptions" class="doctor-diet-grid"></div></fieldset>
+                  <p id="doctorProfileError" class="form-error"></p>
+                  <div class="button-row"><button id="backToIdentity" type="button" class="ghost-button">上一步</button><button class="gold-button" type="submit">保存草稿并下一步</button></div>
+                </form>
+              </section>
+
+              <section id="doctorStepCapture" class="workflow-screen">
+                <div class="patient-confirm" id="selectedPatient"></div>
+                <p class="eyebrow">STEP 03</p><h2>标准化足部影像采集</h2>
+                <p class="screen-note">先打开摄像头并拍照，或从相册选择图片；预览确认后进入下一张。</p>
+                <label class="consent-check"><input type="checkbox" id="patientConsent"><span>我已获得患者本人同意，将本次图片和结果保存到其档案中。</span></label>
+                <div id="doctorCaptureArea">
+                  <div class="doctor-capture-guide-card"><div><span id="doctorCapturePhase" class="eyebrow">足部全景 · 1/3</span><h3 id="doctorCaptureTitle">左侧视角</h3><p id="doctorCaptureInstruction"></p></div><div id="doctorCaptureGuide" class="doctor-capture-guide" aria-hidden="true"></div></div>
+                  <div id="doctorCaptureSlots" class="doctor-capture-slots" aria-label="五张照片拍摄进度"></div>
+                  <div class="doctor-camera"><video id="doctorVideo" autoplay playsinline muted></video><img id="doctorPreview" alt="当前视角图片预览"><div id="doctorCameraOverlay" class="doctor-camera-overlay guide-side"></div><div id="doctorCameraPlaceholder"><strong id="doctorPlaceholderTitle">准备拍摄</strong><small>可打开摄像头或从本地选择图片</small></div><canvas id="doctorCanvas" hidden></canvas></div>
+                  <div class="camera-actions"><button id="openDoctorCamera" class="ghost-button" type="button">打开摄像头</button><button id="takeDoctorPhoto" class="ghost-button" type="button" hidden>拍照</button><button id="chooseDoctorFile" class="ghost-button" type="button">从相册选择</button><button id="confirmDoctorPhoto" class="gold-button" type="button" disabled>确认本张</button><input id="doctorFileInput" type="file" accept="image/*" hidden></div>
+                </div>
+                <div id="doctorCloseupPrompt" class="doctor-closeup-prompt" hidden><span class="eyebrow">3/5 · 足部全景已完成</span><h3>接下来拍摄两张创口特写</h3><p>请确保创口占满大部分屏幕，并让创口、创缘和周围皮肤清晰可见。</p><button id="startDoctorCloseup" class="gold-button" type="button">开始创口特写</button></div>
+                <section class="optional-video-section">
+                  <div><p class="eyebrow">OPTIONAL VIDEO</p><h3>视频采集 <span>选填</span></h3><p>未上传视频也可以正常提交。若采集，每段最长15秒。</p></div>
+                  <div class="optional-video-grid">
+                    <label><strong>全足环绕视频</strong><small>围绕足部进行360°拍摄</small><input id="fullFootVideoInput" type="file" accept="video/mp4,video/quicktime,video/webm"><span id="fullFootVideoName">选择视频</span></label>
+                    <label><strong>创口局部视频</strong><small>对创口进行近距离多角度拍摄</small><input id="woundVideoInput" type="file" accept="video/mp4,video/quicktime,video/webm"><span id="woundVideoName">选择视频</span></label>
+                  </div>
+                </section>
+                <p id="doctorCaptureError" class="form-error"></p>
+                <div class="button-row"><button id="backToProfile" class="ghost-button" type="button">上一步</button><button id="doctorSubmitAnalysis" class="gold-button" type="button" disabled>完成 0/5</button></div>
+              </section>
+
+              <section id="doctorStepReport" class="workflow-screen">
+                <p class="eyebrow">STEP 04</p><h2 id="reportHeading">核对并完成归档</h2>
+                <div id="archiveIdentity" class="patient-confirm"></div>
+                <div id="doctorReportContent"></div>
+                <div id="missingRequired" class="missing-required" hidden></div>
+                <p id="archiveError" class="form-error"></p>
+                <div id="archiveActions" class="button-row"><button id="editClinicalInfo" class="ghost-button" type="button">返回修改信息</button><button id="finalSubmit" class="gold-button" type="button">提交并完成归档</button></div>
+                <div id="archiveComplete" class="archive-complete" hidden></div>
+                <div id="archiveCompleteActions" class="button-row" hidden><button id="newDoctorDetection" class="ghost-button" type="button">登记下一位患者</button><button id="backDashboard" class="gold-button" type="button">返回工作台</button></div>
+              </section>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="doctorToast" class="doctor-toast"></div>
+    <script src="./doctor.js?v=20260722-native-download2"></script>
+  </body>
+</html>

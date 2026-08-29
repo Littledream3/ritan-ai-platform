@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0c2340">
+  <title>日坛 AI · 医生数据采集系统</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/styles.css?v=20260717-4">
+</head>
+<body>
+  <section id="authView" class="auth-view">
+    <div class="auth-brand">
+      <div class="brand-mark">R</div><p class="eyebrow">RITAN AI · CLINICAL DATA</p>
+      <h1>医生数据采集系统</h1>
+      <p>标准化采集足部临床影像与视频，为后续医学研究提供完整、可追溯的数据。</p>
+      <div class="auth-trust"><span>独立数据库</span><span>全程加密传输</span><span>逐项自动保存</span></div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs"><button class="active" data-auth-tab="login">医生登录</button><button data-auth-tab="register">引荐码注册</button></div>
+      <form id="loginForm" class="auth-form">
+        <label>用户名<input name="username" autocomplete="username" maxlength="40" required placeholder="请输入医生用户名"></label>
+        <label>密码<input name="password" type="password" autocomplete="current-password" maxlength="72" required placeholder="请输入密码"></label>
+        <p id="loginError" class="form-error" aria-live="polite"></p><button class="primary-button" type="submit">安全登录</button>
+      </form>
+      <form id="registerForm" class="auth-form" hidden>
+        <div class="form-two"><label>用户名<input name="username" autocomplete="username" minlength="3" maxlength="40" pattern="[A-Za-z][A-Za-z0-9_.\-]+" required placeholder="英文字母开头"><small>3–40 位，英文字母开头，可包含数字、点、下划线和连字符</small></label><label>医生姓名<input name="display_name" minlength="1" maxlength="50" required placeholder="请输入姓名"><small>请输入用于系统展示的医生姓名</small></label></div>
+        <div class="form-two"><label>所属机构（选填）<input name="institution" maxlength="120" placeholder="选填"></label><label>科室（选填）<input name="department" maxlength="80" placeholder="选填"></label></div>
+        <label>登录密码<input name="password" type="password" autocomplete="new-password" minlength="10" maxlength="72" required placeholder="大小写字母、数字和符号"><small>至少 10 位，必须同时包含大写字母、小写字母、数字和符号</small></label>
+        <label>引荐码<input name="invitation_code" type="password" maxlength="100" required placeholder="请输入机构引荐码"></label>
+        <p id="registerError" class="form-error" aria-live="polite"></p><button class="primary-button" type="submit">注册并进入系统</button>
+      </form>
+    </div>
+  </section>
+
+  <div id="appView" class="app-view" hidden>
+    <header class="topbar">
+      <div class="topbar-brand"><span class="brand-mark small">R</span><div><strong>日坛 AI</strong><small>医生数据采集系统</small></div></div>
+      <button id="mobileNavButton" class="mobile-nav-button" type="button" aria-label="打开导航">☰</button>
+      <nav id="workspaceNav" class="workspace-nav">
+        <button class="active" type="button" data-view="workbench">工作台</button>
+        <button type="button" data-view="collection">开始采集</button>
+        <button type="button" data-view="profile">我的信息</button>
+      </nav>
+      <div class="doctor-menu"><span id="doctorName"></span><button id="logoutButton" class="text-button" type="button">退出登录</button></div>
+    </header>
+
+    <main class="workspace">
+      <section id="workbenchView" class="workspace-view active">
+        <div class="view-heading"><div><p class="eyebrow">CLINICAL WORKBENCH</p><h1>患者采集工作台</h1><p>通过手机号、患者编号、住院ID或采集编号查询历史档案。</p></div><button id="newCollectionButton" class="primary-button" type="button">开始新的采集</button></div>
+        <div class="summary-grid">
+          <article><span>关联患者</span><strong id="summaryPatients">0</strong><small>人</small></article>
+          <article><span>采集记录</span><strong id="summarySessions">0</strong><small>次</small></article>
+          <article><span>已归档</span><strong id="summaryCompleted">0</strong><small>次</small></article>
+          <article><span>今日新增</span><strong id="summaryToday">0</strong><small>次</small></article>
+        </div>
+        <article class="data-card">
+          <div class="card-heading"><div><h2>历史记录</h2><p>患者档案与每次住院采集记录相互独立、持续关联</p></div>
+            <form id="workbenchSearch" class="inline-search"><input name="query" maxlength="64" placeholder="手机号 / 患者编号 / 住院ID"><select name="status"><option value="all">全部状态</option><option value="collecting">采集中</option><option value="completed">已归档</option></select><button class="secondary-button" type="submit">查询</button></form>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>患者编号</th><th>住院ID</th><th>患者信息</th><th>媒体</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead><tbody id="historyRows"><tr><td colspan="7" class="table-empty">暂无记录</td></tr></tbody></table></div>
+        </article>
+      </section>
+
+      <section id="collectionView" class="workspace-view">
+        <div class="collection-shell">
+          <aside class="workflow-sidebar">
+            <div class="workflow-title"><p class="eyebrow">COLLECTION WORKFLOW</p><h2>标准化采集流程</h2></div>
+            <ol class="workflow-steps">
+              <li class="active" data-step="1" tabindex="0"><span>1</span><div><strong>患者信息</strong><small>身份与临床资料</small></div></li>
+              <li data-step="2" tabindex="0"><span>2</span><div><strong>照片采集</strong><small>5 张全足＋5 张创口</small></div></li>
+              <li data-step="3" tabindex="0"><span>3</span><div><strong>视频采集</strong><small>选填，每段不超过 15 秒</small></div></li>
+              <li data-step="4" tabindex="0"><span>4</span><div><strong>核对归档</strong><small>统一校验并提交</small></div></li>
+            </ol>
+            <div id="sessionSummary" class="session-summary" hidden><span>当前采集编号</span><strong id="sessionCode">—</strong><small id="patientCode">—</small><div><b id="photoCount">0/10</b> 照片 <b id="videoCount">0/2</b> 视频</div></div>
+            <button class="secondary-button wide" type="button" data-view="workbench">返回工作台</button>
+          </aside>
+
+          <section class="workflow-content">
+            <section id="patientStep" class="workflow-screen active">
+              <div class="screen-heading"><div><p class="eyebrow">STEP 01 · PATIENT PROFILE</p><h1>患者信息与本次住院</h1><p>手机号会精准关联患者档案；系统自动生成唯一患者编号和本次采集编号。</p></div><span class="status-pill">统一登记</span></div>
+              <form id="patientForm" class="patient-form">
+                <div class="field full phone-lookup"><label><span>手机号 <b>*</b></span><input name="phone" inputmode="tel" autocomplete="tel" maxlength="20" required placeholder="请输入11位手机号"></label><button id="lookupPatientButton" class="secondary-button" type="button">查询并填充</button></div>
+                <div id="patientLookupResult" class="lookup-result full" hidden></div>
+                <label class="field"><span>本次住院ID <b>*</b></span><input name="admission_id" maxlength="64" required placeholder="例如：ZY202600102"><small>用于识别本次住院，字母自动转为大写</small></label>
+                <label class="field"><span>年龄 <b>*</b></span><input name="age" type="number" min="0" max="120" inputmode="numeric" required placeholder="请输入年龄"></label>
+                <fieldset class="field full"><legend>性别 <b>*</b></legend><div class="radio-group sex-options"><label><input type="radio" name="sex" value="male" required><span>男</span></label><label><input type="radio" name="sex" value="female"><span>女</span></label></div></fieldset>
+                <fieldset class="field full"><legend>糖尿病等级 <b>*</b></legend><div class="radio-group grade-options"><label><input type="radio" name="diabetes_grade" value="0" required><span>0 级</span></label><label><input type="radio" name="diabetes_grade" value="1"><span>1 级</span></label><label><input type="radio" name="diabetes_grade" value="2"><span>2 级</span></label><label><input type="radio" name="diabetes_grade" value="3"><span>3 级</span></label><label><input type="radio" name="diabetes_grade" value="4"><span>4 级</span></label><label><input type="radio" name="diabetes_grade" value="5"><span>5 级</span></label></div></fieldset>
+                <label class="field"><span>饮食习惯（选填）</span><select id="dietaryHabit" name="dietary_habit"><option value="">选填</option></select></label>
+                <label class="field"><span>患者姓名（选填）</span><input name="patient_name" maxlength="50" pattern="[\u4e00-\u9fffA-Za-z·.\- ]{1,50}" placeholder="选填"></label>
+                <label class="field"><span>居住地（选填）</span><input name="residence" maxlength="100" placeholder="选填"></label>
+                <div class="privacy-note full"><strong>数据使用提示</strong><p>请在采集前取得患者知情同意。资料与媒体文件存储在本系统独立数据库和独立媒体目录中。</p></div>
+                <p id="patientError" class="form-error full" aria-live="polite"></p>
+                <div class="button-row full"><button class="secondary-button" type="button" data-view="workbench">返回工作台</button><button class="primary-button" type="submit">保存草稿并下一步</button></div>
+              </form>
+            </section>
+
+            <section id="photoStep" class="workflow-screen">
+              <div class="screen-heading compact"><div><p id="photoPhase" class="eyebrow">全足基础照 · 1/5</p><h1 id="photoTitle">全足上方</h1><p id="photoInstruction">从足部正上方垂直拍摄，完整包含脚趾至脚后跟。</p></div><span id="photoProgress" class="status-pill">0 / 10</span></div>
+              <div id="photoSlots" class="capture-slots" aria-label="10 张照片采集进度"></div>
+              <div id="photoCapturePanel" class="capture-grid"><div class="camera-panel"><div class="camera-stage"><video id="photoVideo" autoplay muted playsinline></video><img id="photoPreview" alt="当前照片预览"><div id="photoPlaceholder" class="camera-placeholder"><span>摄像头尚未启动</span><small>打开摄像头或从相册选择</small></div><div id="photoGuide" class="capture-guide" aria-hidden="true"></div><div id="photoWatermark" class="capture-watermark">日坛 AI 数据采集</div></div><div class="camera-actions"><button id="openPhotoCamera" class="secondary-button" type="button">打开摄像头</button><button id="takePhoto" class="primary-button" type="button" disabled>拍摄</button><button id="choosePhoto" class="secondary-button" type="button">从相册选择</button><input id="photoFileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden></div></div><aside class="capture-instructions"><span class="instruction-index">ALIGNMENT GUIDE</span><h3 id="photoGuideTitle">请将完整足部置于轮廓线内</h3><ul id="photoTips"></ul><p class="watermark-note"><span>WATERMARK</span>确认后系统自动写入采集项目和时间水印。</p><p id="photoError" class="form-error"></p><button id="confirmPhoto" class="primary-button wide" type="button" disabled>确认并上传本张照片</button></aside></div>
+              <div id="closeupTransition" class="stage-transition" hidden><span>5 / 10</span><p class="eyebrow">全足基础照已完成</p><h2>接下来拍摄 5 张创口特写</h2><p>请确保创口占满大部分屏幕，建议画面占比达到 70% 以上。</p><button id="startCloseups" class="primary-button" type="button">开始创口特写</button></div>
+              <div class="button-row"><button class="secondary-button" type="button" data-go-step="1">返回上一步</button><button id="photoNextButton" class="primary-button" type="button">下一步</button></div>
+            </section>
+
+            <section id="videoStep" class="workflow-screen">
+              <div class="screen-heading compact"><div><p id="videoPhase" class="eyebrow">VIDEO 01 · 1/2</p><h1 id="videoTitle">全足 360° 环绕视频</h1><p id="videoInstruction">视频为选填项，可直接进入最终核对。</p></div><span id="videoProgress" class="status-pill">选填 · 0 / 2</span></div>
+              <div id="videoSlots" class="video-slots"></div>
+              <div class="video-layout"><div class="video-stage"><video id="videoLive" autoplay muted playsinline></video><video id="videoPreview" controls playsinline></video><div id="videoPlaceholder" class="camera-placeholder"><span>准备录制 15 秒以内视频</span><small>也可以选择已有视频</small></div><div id="recordBadge" class="record-badge"><i></i><span>00:15</span></div><div class="video-guide"><span>保持目标位于辅助框内</span></div></div><aside class="video-controls"><div class="countdown-card"><span>单段最长时长</span><strong id="countdownValue">15</strong><small>秒</small><div><i id="countdownBar"></i></div></div><button id="openVideoCamera" class="secondary-button wide" type="button">打开摄像头</button><button id="recordVideo" class="record-button" type="button" disabled><span></span>开始录制</button><button id="chooseVideo" class="secondary-button wide" type="button">选择已有视频</button><input id="videoFileInput" type="file" accept="video/mp4,video/quicktime,video/webm" hidden><p id="videoError" class="form-error"></p><button id="confirmVideo" class="primary-button wide" type="button" disabled>确认并上传本段视频</button></aside></div>
+              <div class="button-row"><button class="secondary-button" type="button" data-go-step="2">返回上一步</button><button class="primary-button" type="button" data-go-step="4">下一步：核对归档</button></div>
+            </section>
+
+            <section id="reviewStep" class="workflow-screen">
+              <div class="screen-heading"><div><p class="eyebrow">STEP 04 · FINAL REVIEW</p><h1>核对并提交归档</h1><p>系统将在此统一提示未完成的必填项目；视频不影响归档。</p></div><span id="reviewStatus" class="status-pill">待核对</span></div>
+              <div id="reviewGrid" class="review-grid"></div><p id="reviewError" class="form-error"></p>
+              <div id="archiveComplete" class="archive-card" hidden><div class="complete-icon">✓</div><div><p class="eyebrow">ARCHIVE COMPLETE</p><h2>本次采集已完成归档</h2><dl id="archiveDetails"></dl></div></div>
+              <div id="reviewActions" class="button-row"><button class="secondary-button" type="button" data-go-step="3">返回上一步</button><button id="submitArchiveButton" class="primary-button" type="button">提交归档</button></div>
+              <div id="completeActions" class="button-row" hidden><button class="secondary-button" type="button" data-view="workbench">查看历史记录</button><button id="nextPatientButton" class="primary-button" type="button">继续下一位患者</button></div>
+            </section>
+          </section>
+        </div>
+      </section>
+
+      <section id="profileView" class="workspace-view profile-page">
+        <article class="profile-card"><div id="profileAvatar" class="profile-avatar">D</div><div><p class="eyebrow">MY PROFILE</p><h1 id="profileName">医生</h1><dl><div><dt>医生账号</dt><dd id="profileUsername">—</dd></div><div><dt>所属机构</dt><dd id="profileInstitution">选填</dd></div><div><dt>科室</dt><dd id="profileDepartment">选填</dd></div></dl></div></article>
+        <article class="followup-card followup-card-v2">
+          <div class="followup-hero">
+            <div class="followup-icon" aria-hidden="true">访</div>
+            <div><p class="eyebrow">PATIENT FOLLOW-UP</p><h2>患者随访与照片对比</h2><p>输入患者手机号，查看历次采集时间、糖尿病等级及足部照片变化。</p></div>
+            <span class="followup-private">仅显示我的患者</span>
+          </div>
+          <div class="followup-search-panel">
+            <div class="followup-search-copy"><strong>手机号查询</strong><small>手机号是患者档案的唯一关联方式</small></div>
+            <form id="timelineSearchForm" class="followup-search phone-followup-search">
+              <label class="phone-input-shell"><span>+86</span><input name="phone" inputmode="tel" autocomplete="tel" maxlength="20" required placeholder="请输入患者11位手机号" aria-label="患者手机号"></label>
+              <button class="primary-button" type="submit"><span>查询随访记录</span><b aria-hidden="true">→</b></button>
+            </form>
+            <p id="timelineError" class="form-error" aria-live="polite"></p>
+            <div class="followup-benefits"><span><b>01</b> 自动关联同一患者</span><span><b>02</b> 查看等级时间线</span><span><b>03</b> 两次照片并排对比</span></div>
+          </div>
+          <section id="timelineResult" hidden>
+            <div id="timelinePatientSummary" class="timeline-patient-summary"></div>
+            <div class="timeline-toolbar"><div><strong>历次采集</strong><small>选择两个时间点进行照片对比</small></div><div><span id="timelineSelectionText">已选择 0 / 2 个时间点</span><button id="compareTimelineButton" class="primary-button" type="button" disabled>开始对比</button></div></div>
+            <div id="timelineList" class="timeline-list"></div>
+          </section>
+        </article>
+        <section id="timelineComparison" class="timeline-comparison" hidden>
+          <div class="card-heading"><div><p class="eyebrow">LONGITUDINAL COMPARISON</p><h2>不同时间点对比</h2><p>照片下方显示实际拍摄时间；糖尿病等级来自对应采集记录的快照。</p></div></div>
+          <div id="timelineComparisonGrid" class="timeline-comparison-grid"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="confirmModal" class="confirm-modal" hidden><div class="confirm-card"><p class="eyebrow">FINAL CONFIRMATION</p><h2>确认提交本次采集？</h2><p>归档后本次患者信息和媒体将不可继续修改。</p><label><input id="doNotRemind" type="checkbox"> 不再提醒</label><div class="button-row"><button id="cancelSubmit" class="secondary-button" type="button">取消</button><button id="confirmSubmit" class="primary-button" type="button">确认提交</button></div></div></div>
+  <canvas id="captureCanvas" hidden></canvas><div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="assets/app.js?v=20260717-3"></script>
+  <script src="assets/timeline.js?v=20260717-3"></script>
+</body>
+</html>

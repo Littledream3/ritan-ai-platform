@@ -1,0 +1,33 @@
+{
+  "name": "lanjiao-skin",
+  "version": "1.0.0",
+  "description": "兰峤AI测肤 - 专业皮肤检测与衰老评估",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext js,jsx"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "jimp": "^1.6.1",
+    "sharp": "^0.34.5",
+    "vite": "^5.1.0"
+  },
+  "keywords": [
+    "skin",
+    "ai",
+    "dermatology",
+    "anti-aging",
+    "medical"
+  ],
+  "author": "兰峤医疗",
+  "license": "MIT"
+}

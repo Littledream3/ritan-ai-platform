@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>皮肤智能分析</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f2f7; color: #1c1c1e; min-height: 100vh; }
+.page { max-width: 640px; margin: 0 auto; padding: 28px 16px 48px; }
+
+h1 { text-align: center; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.subtitle { text-align: center; font-size: 13px; color: #8e8e93; margin-bottom: 24px; }
+
+/* ── 拍摄指引 ── */
+.guide-card {
+  background: #fff; border-radius: 14px; margin-bottom: 18px; overflow: hidden;
+}
+.guide-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; cursor: pointer; font-size: 14px; font-weight: 500; color: #1c1c1e;
+  -webkit-tap-highlight-color: transparent;
+}
+.guide-header:active { background: #f2f2f7; }
+#guideArrow { color: #8e8e93; transition: transform .25s; flex-shrink: 0; }
+#guideBody { padding: 0 16px 16px; }
+.guide-imgs { display: flex; gap: 10px; margin-bottom: 14px; }
+.guide-img-item { flex: 1; text-align: center; }
+.guide-img-item img {
+  width: 100%; aspect-ratio: 3/4; object-fit: cover;
+  border-radius: 10px; background: #f2f2f7;
+}
+.guide-img-label {
+  font-size: 12px; font-weight: 600; color: #1c1c1e; margin: 6px 0 3px;
+}
+.guide-img-item p { font-size: 11px; color: #8e8e93; line-height: 1.5; }
+.guide-tips {
+  list-style: none; background: #f2f2f7; border-radius: 10px; padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.guide-tips li { font-size: 13px; color: #3a3a3c; }
+
+/* ── 三张图槽 ── */
+.slots { display: flex; gap: 10px; margin-bottom: 12px; }
+.slot { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.slot-label { text-align: center; font-size: 12px; font-weight: 500; color: #48484a; }
+
+.slot-area {
+  width: 100%; aspect-ratio: 3/4; background: #fff; border: 2px dashed #c7c7cc;
+  border-radius: 14px; cursor: pointer; overflow: hidden; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .2s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.slot-area:active { transform: scale(0.97); }
+.slot-area.filled { border-style: solid; border-color: #c7c7cc; }
+.slot-area img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: none;
+}
+.slot-area.filled img { display: block; }
+.slot-plus { display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none; }
+.slot-area.filled .slot-plus { display: none; }
+.slot-plus svg { width: 28px; height: 28px; fill: none; stroke: #c7c7cc; stroke-width: 2; stroke-linecap: round; }
+.slot-plus span { font-size: 11px; color: #aeaeb2; }
+
+/* ── 进度 & 主按钮 ── */
+.progress { text-align: center; font-size: 13px; color: #8e8e93; margin-bottom: 14px; }
+.progress b { color: #1c1c1e; }
+
+.btn {
+  display: block; width: 100%; padding: 15px; background: #1c1c1e; color: #fff;
+  border: none; border-radius: 12px; font-size: 16px; font-weight: 500;
+  cursor: pointer; transition: opacity .2s; margin-bottom: 20px;
+}
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn:not(:disabled):active { opacity: 0.75; }
+
+
+/* ── Loading ── */
+.loading { text-align: center; padding: 48px 0; display: none; }
+.spinner {
+  width: 36px; height: 36px; border: 3px solid #e5e5ea; border-top-color: #636366;
+  border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 14px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading p { font-size: 14px; color: #8e8e93; }
+
+/* ── 结果 ── */
+.result { display: none; }
+.card { background: #fff; border-radius: 14px; padding: 18px 16px; margin-bottom: 12px; }
+.card-title { font-size: 11px; color: #8e8e93; letter-spacing: .8px; text-transform: uppercase; margin-bottom: 12px; }
+.age-num { font-size: 56px; font-weight: 700; line-height: 1; }
+.age-unit { font-size: 17px; color: #636366; margin-left: 4px; }
+.age-note { font-size: 12px; color: #aeaeb2; margin-top: 6px; }
+
+.metric-row { display: flex; align-items: center; margin-bottom: 7px; font-size: 12px; }
+.metric-name { width: 78px; flex-shrink: 0; color: #48484a; }
+.bar-bg { flex: 1; height: 5px; background: #f2f2f7; border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+.metric-val { width: 34px; text-align: right; color: #636366; margin-left: 6px; }
+
+.report-text { font-size: 14px; line-height: 1.85; color: #3a3a3c; }
+.report-text strong { color: #1c1c1e; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>皮肤智能分析</h1>
+  <p class="subtitle">请拍摄或上传左脸、正脸、右脸三张照片</p>
+
+  <!-- 拍摄指引 -->
+  <div class="guide-card">
+    <div class="guide-header" onclick="toggleGuide()">
+      <span>📸 拍摄示例 &amp; 注意事项</span>
+      <svg id="guideArrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div id="guideBody">
+      <div class="guide-imgs">
+        <div class="guide-img-item">
+          <img src="/image/left.png" alt="左脸示例">
+          <div class="guide-img-label">左脸</div>
+          <p>头向右转约45°<br>完整露出左侧脸颊</p>
+        </div>
+        <div class="guide-img-item">
+          <img src="/image/front.png" alt="正脸示例">
+          <div class="guide-img-label">正脸</div>
+          <p>正视镜头<br>保持头部水平</p>
+        </div>
+        <div class="guide-img-item">
+          <img src="/image/right.png" alt="右脸示例">
+          <div class="guide-img-label">右脸</div>
+          <p>头向左转约45°<br>完整露出右侧脸颊</p>
+        </div>
+      </div>
+      <ul class="guide-tips">
+        <li>💡 光线充足，避免强逆光或阴影遮脸</li>
+        <li>🚫 摘除口罩、眼镜等遮挡物</li>
+        <li>📏 距镜头约 30 cm，面部占画面 2/3 以上</li>
+        <li>🧴 卸妆或素颜拍摄，结果更准确</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 三张图槽 -->
+  <div class="slots">
+    <div class="slot">
+      <div class="slot-label">左脸</div>
+      <div class="slot-area" id="area-left" onclick="triggerUpload('left')">
+        <div class="slot-plus">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>上传</span>
+        </div>
+        <img id="img-left" alt="左脸">
+      </div>
+      <input type="file" id="file-left" accept="image/*" style="display:none" onchange="handleFile(this,'left')">
+    </div>
+
+    <div class="slot">
+      <div class="slot-label">正脸</div>
+      <div class="slot-area" id="area-front" onclick="triggerUpload('front')">
+        <div class="slot-plus">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>上传</span>
+        </div>
+        <img id="img-front" alt="正脸">
+      </div>
+      <input type="file" id="file-front" accept="image/*" style="display:none" onchange="handleFile(this,'front')">
+    </div>
+
+    <div class="slot">
+      <div class="slot-label">右脸</div>
+      <div class="slot-area" id="area-right" onclick="triggerUpload('right')">
+        <div class="slot-plus">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>上传</span>
+        </div>
+        <img id="img-right" alt="右脸">
+      </div>
+      <input type="file" id="file-right" accept="image/*" style="display:none" onchange="handleFile(this,'right')">
+    </div>
+  </div>
+
+  <p class="progress">已选 <b id="progressNum">0</b> / 3 张照片</p>
+  <button class="btn" id="analyzeBtn" disabled onclick="analyze()">开始分析</button>
+
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>正在分析三张照片，请稍候…</p>
+  </div>
+
+  <!-- 结果 -->
+  <div class="result" id="result">
+    <div class="card">
+      <div class="card-title">预测皮肤年龄</div>
+      <div>
+        <span class="age-num" id="ageNum">--</span>
+        <span class="age-unit">岁</span>
+      </div>
+      <p class="age-note">基于正脸照片预测</p>
+    </div>
+    <div class="card">
+      <div class="card-title">18项皮肤指标（0–5分，越高越严重，三图均值）</div>
+      <div id="metrics"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">AI 评估报告</div>
+      <div class="report-text" id="reportText"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleGuide() {
+  const body  = document.getElementById('guideBody');
+  const arrow = document.getElementById('guideArrow');
+  const open  = body.style.display !== 'none';
+  body.style.display  = open ? 'none' : '';
+  arrow.style.transform = open ? 'rotate(-90deg)' : '';
+}
+
+const slots = { left: null, front: null, right: null };
+function triggerUpload(name) {
+  document.getElementById('file-' + name).click();
+}
+
+function handleFile(input, name) {
+  const file = input.files[0];
+  if (!file) return;
+  setSlot(name, file, URL.createObjectURL(file));
+}
+
+function setSlot(name, file, url) {
+  slots[name] = file;
+  const img  = document.getElementById('img-' + name);
+  const area = document.getElementById('area-' + name);
+  img.src = url;
+  area.classList.add('filled');
+  updateProgress();
+}
+
+function updateProgress() {
+  const n = Object.values(slots).filter(Boolean).length;
+  document.getElementById('progressNum').textContent = n;
+  document.getElementById('analyzeBtn').disabled = n < 3;
+}
+
+// ── 提交分析 ────────────────────────────────
+function scoreColor(s) {
+  if (s >= 4.0) return '#ff453a';
+  if (s >= 2.5) return '#ff9f0a';
+  if (s >= 1.0) return '#ffd60a';
+  return '#30d158';
+}
+
+async function analyze() {
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+  document.getElementById('loading').style.display  = 'block';
+  document.getElementById('result').style.display   = 'none';
+
+  const form = new FormData();
+  form.append('front', slots.front, slots.front.name);
+  form.append('left',  slots.left,  slots.left.name);
+  form.append('right', slots.right, slots.right.name);
+
+  try {
+    const resp = await fetch('/api/analyze', { method: 'POST', body: form });
+    const data = await resp.json();
+
+    if (data.status !== 'ok') {
+      alert('分析失败：' + (data.message || '未知错误'));
+      return;
+    }
+
+    document.getElementById('ageNum').textContent = data.age.toFixed(1);
+
+    const metricsEl = document.getElementById('metrics');
+    metricsEl.innerHTML = '';
+    for (const [name, score] of Object.entries(data.skin_scores)) {
+      const pct = (score / 5 * 100).toFixed(1);
+      metricsEl.innerHTML += `
+        <div class="metric-row">
+          <span class="metric-name">${name}</span>
+          <div class="bar-bg">
+            <div class="bar-fill" style="width:${pct}%;background:${scoreColor(score)}"></div>
+          </div>
+          <span class="metric-val">${score.toFixed(2)}</span>
+        </div>`;
+    }
+
+    const html = data.report
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+    document.getElementById('reportText').innerHTML = html;
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+  } catch(e) {
+    alert('请求失败，请确认服务已启动：' + e.message);
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

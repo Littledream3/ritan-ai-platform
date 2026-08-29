@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="日坛 AI 肌肤状态评估，规范拍摄后生成结构化肌肤状态参考。" />
+    <title>日坛 AI 肌肤状态评估</title>
+    <link rel="stylesheet" href="../styles.css?v=20260729-platform2" />
+    <link rel="modulepreload" href="/mediapipe/vision_bundle.mjs">
+    <link rel="preload" href="/mediapipe/wasm/vision_wasm_internal.js" as="script">
+    <link rel="preload" href="/mediapipe/wasm/vision_wasm_internal.wasm" as="fetch" crossorigin="anonymous">
+  </head>
+  <body class="mobile-page">
+    <section id="landing" class="mobile-shell">
+      <header class="mobile-nav" aria-label="页面导航">
+        <a class="mobile-brand" href="/"><strong>日坛 AI</strong><span>RITAN AI</span></a>
+        <span class="mobile-position">AI 经皮精准递送平台</span>
+      </header>
+
+      <img class="mobile-hero-img" src="/lanjiao-static/picture/b9af8d33-77f7-46d7-a887-b90cc354f8a4.png" alt="肌肤分析示意图" />
+
+      <section class="mobile-hero">
+        <p class="platform-kicker">SKIN IMAGE ASSESSMENT</p>
+        <h1>AI 肌肤状态评估</h1>
+        <h2>规范拍摄一张照片，生成结构化肌肤状态参考</h2>
+        <p>全程约 90 秒，报告包含综合状态、重点指标和个体化透皮方案建议。</p>
+        <button class="outline-cta" type="button" data-start>开始肌肤状态评估</button>
+      </section>
+
+      <section class="mobile-story">
+        <h2>先了解状态，再选择下一步</h2>
+        <p>自研图像评估模型对纹理、色斑、毛孔、泛红和弹性等可见特征进行分析。</p>
+        <p>报告用于肌肤状态与日常护理方向参考，不替代皮肤科医生的诊断和治疗意见。</p>
+        <img src="/lanjiao-static/picture/142309e8-05fd-41f1-a71b-315962f30234.png" alt="护肤产品展示" />
+      </section>
+
+      <section class="mobile-steps">
+        <h2>四步完成评估</h2>
+        <div class="timeline">
+          <div class="step"><span>1</span><p>选择本次照片和数据的使用范围</p></div>
+          <div class="step"><span>2</span><p>允许相机权限，按照提示调整光线与头部位置</p></div>
+          <div class="step"><span>3</span><p>系统自动完成拍摄并生成结构化评估结果</p></div>
+          <div class="step"><span>4</span><p>查看个体化透皮方案，一键匹配产品或预约服务</p></div>
+        </div>
+      </section>
+
+      <footer class="mobile-platform-footer">
+        <strong>日坛 AI</strong>
+        <p>一个 AI 底座，连接透皮给药、医美透皮与功效化妆品业务。</p>
+        <a href="/skin-diagnosis/#business">商务合作</a>
+      </footer>
+
+      <div class="bottom-cta">
+        <button class="outline-cta" type="button" data-start>开始肌肤状态评估</button>
+      </div>
+    </section>
+
+    <div id="consentModal" class="consent-overlay" hidden>
+      <div class="consent-card" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
+        <button id="consentClose" class="consent-close" type="button" aria-label="关闭">关闭</button>
+        <p class="platform-kicker">DATA CHOICE</p>
+        <h2 id="consentTitle">选择数据使用范围</h2>
+        <p class="consent-intro">仅本次分析为默认选项，另外两项均由您自主选择。</p>
+        <form id="consentForm">
+          <label class="consent-option required">
+            <input type="checkbox" checked disabled />
+            <span><strong>仅用于本次分析</strong><small>分析完成后不保留原始照片。</small></span>
+          </label>
+          <label class="consent-option">
+            <input id="researchConsent" name="research_use" type="checkbox" />
+            <span><strong>匿名化后用于模型改进</strong><small>照片以随机编号保存，不与联系方式直接关联。</small></span>
+          </label>
+          <label class="consent-option">
+            <input id="serviceConsent" name="service_followup" type="checkbox" />
+            <span><strong>接收个性化方案与后续服务</strong><small>选择后请填写手机、微信或邮箱。</small></span>
+          </label>
+          <label id="consentContactField" class="consent-contact" hidden>
+            <span>联系方式</span>
+            <input id="consentContact" name="contact" maxlength="100" placeholder="手机、微信或邮箱" />
+          </label>
+          <details class="consent-details">
+            <summary>查看数据处理说明</summary>
+            <p>系统仅收集完成本次评估所需的数据。匿名模型改进和后续服务均需单独授权；如需查询或删除已授权数据，可通过日坛 AI 官方渠道提出申请。</p>
+          </details>
+          <p id="consentError" class="consent-error" aria-live="polite"></p>
+          <button class="consent-submit" type="submit">确认并继续</button>
+        </form>
+      </div>
+    </div>
+
+    <section id="captureApp" class="capture-app">
+      <header class="capture-header">
+        <button id="backLanding" class="nav-icon" type="button" aria-label="返回">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <h1>肌肤状态评估</h1>
+        <button id="closeCapture" class="capture-close" type="button" aria-label="关闭">×</button>
+      </header>
+
+      <main class="capture-main">
+        <section id="captureNotice" class="capture-notice">
+          <div class="notice-card">
+            <p>针对您的肌肤状况及需求，寻找适合的个人定制护肤方案！为深入了解肌肤状态，请留意以下提示：</p>
+            <div class="notice-items">
+              <div><span>1</span><strong>已卸妆及洁面</strong></div>
+              <div><span>2</span><strong>眼睛张开向前看</strong></div>
+              <div><span>3</span><strong>面部置于框线范围内并保持水平</strong></div>
+              <div><span>4</span><strong>头发不要遮盖面部并摘下眼镜</strong></div>
+            </div>
+            <p id="noticeLoading" class="notice-loading" hidden>首次使用需加载检测引擎，请稍候。</p>
+            <button id="startCameraBtn" class="notice-start" type="button">立即体验</button>
+          </div>
+        </section>
+
+        <section id="captureScene" class="capture-scene" hidden>
+          <div class="quality-row">
+            <div id="lightState" class="quality-pill bad">
+              <span>灯光</span><strong>不佳</strong>
+            </div>
+            <div id="facingState" class="quality-pill bad">
+              <span>面向前方</span><strong>不佳</strong>
+            </div>
+            <div id="positionState" class="quality-pill bad">
+              <span>头部位置</span><strong>不佳</strong>
+            </div>
+          </div>
+
+          <div class="camera-panel auto-panel">
+            <video id="video" playsinline autoplay muted></video>
+            <div class="camera-shade"></div>
+            <div class="face-guide">
+              <div id="progressRing" class="progress-ring"></div>
+            </div>
+            <div id="centerTip" class="center-tip">请将面部置于框线范围内</div>
+          </div>
+
+          <div class="capture-footer-note">
+            <span id="footerHint">三项均达到要求后，将保持 3 秒自动拍摄</span>
+          </div>
+        </section>
+
+        <canvas id="canvas" hidden></canvas>
+        <div id="statusBox" class="status-box"></div>
+      </main>
+    </section>
+
+    <section id="reportView" class="report-view">
+      <header class="capture-header">
+        <button id="restartBtn" class="nav-icon" type="button" aria-label="重新检测">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
+        </button>
+        <h1>肌肤分析报告</h1>
+        <span></span>
+      </header>
+      <div id="reportContent"></div>
+    </section>
+
+    <div id="mobileLeadModal" class="consent-overlay" hidden>
+      <div class="consent-card lead-card" role="dialog" aria-modal="true" aria-labelledby="mobileLeadTitle">
+        <button id="mobileLeadClose" class="consent-close" type="button" aria-label="关闭">关闭</button>
+        <p class="platform-kicker">NEXT STEP</p>
+        <h2 id="mobileLeadTitle">获取后续方案</h2>
+        <p id="mobileLeadIntro" class="consent-intro"></p>
+        <form id="mobileLeadForm">
+          <input type="hidden" name="lead_type" value="custom_consult" />
+          <label class="consent-contact"><span>称呼</span><input name="name" maxlength="40" autocomplete="name" /></label>
+          <label class="consent-contact"><span>联系方式 *</span><input name="contact" maxlength="100" required placeholder="手机、微信或邮箱" /></label>
+          <label class="consent-contact"><span>需求说明</span><textarea name="description" maxlength="500" rows="3"></textarea></label>
+          <p id="mobileLeadStatus" class="consent-error" aria-live="polite"></p>
+          <button class="consent-submit" type="submit">确认提交</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ====== 登录/注册弹窗 ====== -->
+    <div id="authModal" class="auth-overlay">
+      <div class="auth-card">
+        <button class="auth-close" id="authClose" type="button" aria-label="关闭">&times;</button>
+
+        <!-- 标签切换 -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">登录</button>
+          <button class="auth-tab" data-tab="register">注册</button>
+        </div>
+
+        <!-- 登录表单 -->
+        <form id="loginForm" class="auth-form active" autocomplete="off">
+          <label class="auth-field">
+            <span>邮箱</span>
+            <input type="email" name="email" placeholder="请输入邮箱" required autocomplete="email">
+          </label>
+          <label class="auth-field">
+            <span>密码</span>
+            <input type="password" name="password" placeholder="请输入密码" required autocomplete="current-password">
+          </label>
+          <p class="auth-error" id="loginError"></p>
+          <button type="submit" class="auth-submit">登录</button>
+        </form>
+
+        <!-- 注册表单 -->
+        <form id="registerForm" class="auth-form" autocomplete="off">
+          <label class="auth-field">
+            <span>邮箱</span>
+            <input type="email" name="email" placeholder="请输入邮箱" required autocomplete="email">
+          </label>
+          <div class="auth-field-code">
+            <label class="auth-field" style="flex:1;margin-bottom:0">
+              <span>验证码</span>
+              <input type="text" name="code" placeholder="6位数字" maxlength="6" required autocomplete="off">
+            </label>
+            <button type="button" class="auth-send-code" id="sendCodeBtn">获取验证码</button>
+          </div>
+          <label class="auth-field">
+            <span>设置密码</span>
+            <input type="password" name="password" placeholder="8-12位，含大小写字母+数字+符号" required autocomplete="new-password">
+          </label>
+          <p class="auth-error" id="registerError"></p>
+          <button type="submit" class="auth-submit">注册并开始分析</button>
+        </form>
+
+        <p class="auth-skip" id="authSkip">跳过登录，直接试用</p>
+      </div>
+    </div>
+
+    <script type="module" src="./js/main.js?v=20260729-platform2"></script>
+  </body>
+</html>

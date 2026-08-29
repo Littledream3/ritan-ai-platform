@@ -1,0 +1,63 @@
+# DFU Wagner 0-5 Grading — ConvNeXt-Tiny + Binary/CORN (v4 finetune calibrated)
+# This file matches the model currently deployed by backend/model_v2.py.
+
+model:
+  name: convnext_tiny
+  architecture: convnext_tiny_binary_corn
+  version: convnext-tiny-corn-v4-finetune-calibrated
+  num_classes: 7
+  pretrained: true
+  binary_head: true
+  ordinal_head: corn
+  checkpoint: /home/ubuntu/dfu-v2/dfu_update_model/models/corn_v4_finetune/best_model_calibrated.pth
+  checkpoint_epoch: 14
+  temperature: 0.7830961346626282
+  binary_threshold: 0.5
+
+data:
+  data_dir: /home/ubuntu/dfu-v2/dfu_data/processed
+  input_size: 224
+  classes:
+    - "Normal"
+    - "Grade 0"
+    - "Grade 1"
+    - "Grade 2"
+    - "Grade 3"
+    - "Grade 4"
+    - "Grade 5"
+  binary: false
+
+training:
+  batch_size: 64
+  epochs: 80
+  learning_rate: 1.0e-3
+  weight_decay: 1.0e-4
+  label_smoothing: 0.1
+  optimizer: adamw
+  lr_scheduler: cosine_warm_restart
+  lr_t_0: 15
+  lr_t_mult: 2
+  lr_min: 1.0e-6
+  early_stopping_patience: 15
+  use_amp: true
+  use_corn: true
+  focal_gamma: 2.0
+  use_class_weights: true
+  joint_training: true
+  binary_loss_weight: 0.5
+
+logging:
+  log_interval: 20
+  checkpoint_dir: /home/ubuntu/dfu-v2/dfu_update_model/models/corn_v4
+  tensorboard_dir: /home/ubuntu/dfu-v2/dfu_update_model/models/runs
+  csv_log: /home/ubuntu/dfu-v2/dfu_update_model/models/corn_v4_finetune/training_log.csv
+
+validation:
+  accuracy: 0.5122950819672131
+  macro_f1: 0.44705948366574466
+  quadratic_kappa: 0.8536260927399898
+  binary_accuracy: 0.9943647540983607
+  binary_f1: 0.9961792288989232
+
+seed: 42
+device: cuda
